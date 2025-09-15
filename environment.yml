@@ -1,0 +1,14 @@
+name: BaanEnv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.10
+  - matplotlib
+  - numpy
+  - pandas
+  - scipy
+  - jupyterlab
+  - ipykernel
+  - python-dotenv
+  - rich
