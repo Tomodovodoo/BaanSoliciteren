@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
 # calculate_Job_Potential.py
-#
-# Reads ../.. /Solicitaties/<Job>_—_<Company>/relevant_info.json,
-# computes a PotentialSatisfaction, and writes CalculatedJobPotential.csv next to this script.
+
+# Leest ../.. /Solicitaties/<Job>_—_<Company>/relevant_info.json,
+# Berekent een PotentialSatisfaction score, en schrijft CalculatedJobPotential.csv in dezelfde folder.
 
 from __future__ import annotations
 from pathlib import Path
@@ -11,7 +10,7 @@ import math
 import csv
 
 
-# Tunable parameters
+# Veranderbare parameters
 
 # Salary curve: F(s) = B + (SMAX - B) * (1 - exp(-K * (s - S0)))
 S0   = 2200.0
