@@ -4,7 +4,7 @@ Hai, ik ben Tom, 21 jaar jong. Welkom bij mijn (semi-wetenschappelijke) zoektoch
 Het leek me een leuk, informatief 1/2-dagproject om alle gevonden vacatures te rangschikken. Gewoon simpele data-analyse, maar dan met een beetje smaak.
 
 ## Waarom?
-Kort gezegd: **geld**, **geluk**, en alles wat je verder van een baan mag verwachten (uitdaging, team, impact, niet huilen op maandagochtend, gezelligheid van de solicitatie landpagina). Deze repo is mijn manier om dat te kwantificeren, hoewel ik waarschijnlijk beter mijn aandacht en tijd besteden aan het invullen van die solicitaties... Anyway, hiermee kon ik kort laten zien, onder enige tijdsdruk, dat ik een beetje data analyse kan.
+Kort gezegd: **geld**, **geluk**, en alles wat je verder van een baan mag verwachten (uitdaging, team, impact, niet huilen op maandagochtend). Deze repo is mijn manier om dat te kwantificeren, hoewel ik waarschijnlijk beter mijn aandacht en tijd besteden aan het invullen van die solicitaties... Anyway, hiermee kon ik kort laten zien, onder enige tijdsdruk, dat ik een beetje data analyse kan.
 
 ## De 3 metrics
 - **Fit:** Hoe goed past de rol bij mijn skills/profiel. Sommige dingen zijn best aan te leren (Cloud), maar als je de hele baan moet aanleren...
