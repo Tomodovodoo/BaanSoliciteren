@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Relevant Info",
+  "type": "object",
+  "required": [
+    "Locatie",
+    "Deadline",
+    "Notes",
+    "Link",
+    "Salary",
+    "Fit",
+    "Contact",
+    "ContactNaam",
+    "ContactPhone",
+    "ContactJob"
+  ],
+  "properties": {
+    "Locatie": { "type": "string" },
+
+    "Deadline": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "YYYY-MM-DD"
+    },
+
+    "Notes": { "type": "string" },
+
+    "Link": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Full URL to the vacancy or doc"
+    },
+
+    "Salary": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Single number, minimum monthly salary in EUR."
+    },
+
+
+    "Fit": {
+      "oneOf": [
+        { "type": "number", "minimum": 0, "maximum": 10 },
+        { "type": "string", "enum": ["Strong", "Good", "Maybe", "Stretch", "Hold"] }
+      ],
+      "description": "Score 0-10 or qualitative level"
+    },
+
+    "Preference": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Score 0-10"
+    },
+
+    "Contact": {
+      "oneOf": [
+        { "type": "string", "format": "email" },
+        { "type": "string", "format": "uri" },
+        { "type": "string" }
+      ],
+      "description": "Email, profile URL, or other handle"
+    },
+
+    "ContactNaam": { "type": "string" },
+
+    "ContactPhone": {
+      "type": "string",
+      "pattern": "^[0-9+()\\-\\s]{5,}$",
+      "description": "Flexible phone pattern (+31 …)"
+    },
+
+    "ContactJob": { "type": "string" }
+  },
+  "additionalProperties": false
+}

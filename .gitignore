@@ -1,4 +1,7 @@
-#Standard .gitignore copied
+# Due to GDPR, some personal data from Job Listings can't be included in the repository, as some listing contain (company) emailadresses and phone numbers tied to individuals
+# Therefore, the following types of files will be excluded from the repository
+JobTracker.csv
+relevant_info.json
 
 # --- Python bytecode & cache ---
 __pycache__/
@@ -14,8 +17,6 @@ env.bak/
 venv.bak/
 .conda/
 conda-env/
-
-# --- Dotenv / local secrets ---
 .env
 .env.*
 *.env
@@ -37,52 +38,9 @@ MANIFEST
 *.spec
 *.manifest
 
-# --- Testing / coverage ---
-.pytest_cache/
-.tox/
-.nox/
-.coverage
-.coverage.*
-coverage.xml
-htmlcov/
-*.cover
-*.py,cover
-.hypothesis/
-
-# --- Type checkers / analyzers ---
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-ruff_cache/
-
-# --- Jupyter ---
-.ipynb_checkpoints/
-profile_default/
-ipython_config.py
-
 # --- Editors / IDEs ---
 .vscode/
-.idea/
-*.swp
-*.swo
-
-# --- OS cruft ---
-.DS_Store
-.AppleDouble
-.LSOverride
-Thumbs.db
-ehthumbs.db
-Desktop.ini
 
 # --- Logs / temp ---
-*.log
 *.tmp
 *.temp
-*~
-*.bak
-
-# --- Docs (Sphinx) build output ---
-docs/_build/
-doc/_build/
