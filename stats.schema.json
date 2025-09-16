@@ -6,7 +6,7 @@
   "properties": {
     "PotentialSatisfaction": { "type": "number", "minimum": 0, "maximum": 10 },
     "NextAction": { "type": "string" },
-    "Response": { "type": "string", "enum": ["Unsent", "Pending", "Received", "Interview Scheduled", "Offer", "Rejected", "Other"] },
+    "Response": { "type": "string", "enum": ["Unsent", "Called", "Pending", "Received", "Interview Scheduled", "Offer", "Rejected", "Other"] },
     "Interviewed": { "type": "boolean" },
     "Hired": { "type": "boolean" },
     "Rejected": { "type": "boolean" }
