@@ -1,0 +1,16 @@
+Betreft: Sollicitatie Junior Test Engineer – kenmerk 63890
+Geachte heer/mevrouw,
+Testen is voor mij nieuwsgierig onderzoeken, slim puzzelen en vele slapeloze nachten. Soms ongelofelijk frustrerend en vermoeiend, maar je doet het voor het eindresultaat, en kan dan met voldoening op de route daar naar toe terugkijken. Ik hoop diezelfde voldoening ook te vinden bij Duo.
+In mijn studie Scheikunde werkte ik precies en data-gedreven; in mijn scriptie onderzocht ik machinelearning (GNN) voor NMR-voorspellingen: werk dat kritisch denken, documenteren en reproduceerbare resultaten vergt. Ik heb veel en gevarieerd getest en robuuste pipelines opgezet om datasets te aggregeren en te valideren, testen was een groot deel van mijn onderzoek.
+In de praktijk heb ik dat aangevuld met bugtesten en werken volgens Agile methodes met Jira (Teamspot), én met troubleshooting en klantcommunicatie bij Odido (via Transcom). Zo leerde ik issues scherp te beschrijven, oorzaken te herleiden en verbeteringen helder terug te koppelen naar collega’s en gebruikers.
+Technisch ben ik leergierig en breed inzetbaar: Python en Git voor scripts/automatisering en versiebeheer, Excel voor snelle analyses, en Windows-debugging voor praktische probleemoplossing. Nieuwe tools maak ik me snel eigen. Ik ben gewend om bevindingen grondig en controleerbaar te rapporteren, feedback actief op te halen en samen te werken met collega’s uit verschillende disciplines. Dat past bij DUO’s vakgroep Test en de focus op continue verbetering.
+De combinatie van leren en bijdragen binnen DUO spreekt me sterk aan.. Standplaats Groningen past uitstekend; ik ben beschikbaar voor 32-36 uur.
+
+Graag licht ik mijn aanpak en leercurve toe in een gesprek.
+Ik zie uw reactie en de vervolgstappen graag tegemoet.
+Met vriendelijke groet,
+Tom de Groot
+
+extra comments:
+Mijn CV heb ik niet expliciet met EuroPass gemaakt. Ik geloof dat de structuur, benodigde informatie, en meer ook te pas komen in mijn huidige CV!
+Als het blijkt dat dit niet zo is, zou ik hierop een bericht kunnen krijgen? Dan vul ik natuurlijk nog een EuroPass CV in.
