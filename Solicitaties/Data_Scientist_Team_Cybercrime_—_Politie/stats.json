@@ -1,7 +1,7 @@
 {
-  "PotentialSatisfaction": 5.0,
-  "NextAction": "Maak Solicitatie brief na aanleiding van belletje, vernoem Radmer gesproken over eis Rijbewijs.",
-  "Response": "Called",
+  "PotentialSatisfaction": 8.0,
+  "NextAction": "Wacht op Resultaat solicitatie",
+  "Response": "Pending",
   "Interviewed": false,
   "Hired": false,
   "Rejected": false

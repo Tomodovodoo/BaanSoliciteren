@@ -1,0 +1,14 @@
+Geachte heer Visser en mevrouw Van Middelaar,
+
+‘Van data naar bewijs’ spreekt mij direct aan. Daar ben ik van, in mijn leven en in mijn studie heb ik vaak ook dit principe toegepast om verder te komen. Vaak maakt slimme data-analyse het verschil tussen een vermoeden en een conclusie. Diezelfde drive wil ik inzetten als specialist datatactiek binnen Team Opsporing in Leeuwarden.
+Wat mij onderscheidt, is mijn plezier in complexe datapuzzels en analyses. Ik ben vertrouwd met router-informatie, datatypen en sniffing, en ik voel me thuis in situaties waar veel, uiteenlopende bronnen gecombineerd moeten worden. Ik heb gewerkt in Scrum/Agile-omgevingen en kan die manier van iteratief, scenario-gedreven werken goed vertalen naar een CSAE-achtige aanpak.
+Mijn bachelorscriptie laat goed zien hoe ik structureel en reproduceerbaar met data werk. Met graph neural networks voor NMR-voorspelling bouwde ik, o.a. via depth-first search en eigen algoritmes voor datasetconstructie, een robuuste pipeline. Ik programmeerde in Python, beheerde code met Git, trainde op Linux/HPC en documenteerde keuzes en evaluaties zorgvuldig. Die combinatie van techniek, schaal en duidelijke verslaglegging neem ik mee naar praktijksituaties waarin bevindingen stand moeten houden. Ook kan ik door mijn achtergrond goed inzien welke limitaties en optimalisaties gemaakt kunnen worden, op technische en communicatief vlak.
+Domeinkennis breng ik mee vanuit de telecom: bij Odido heb ik ervaring opgedaan met processen en CDR-data. Hier heb ik minimaal opsporingswerk hoeven doen natuurlijk, maar begrijp ik de structuur, beperkingen en mogelijkheden ervan goed. OSINT-tools ken ik conceptueel; ik weet welke typen middelen wanneer waardevol zijn en heb zelf een klein privé OSINT project. Ik leer snel en pak nieuwe tooling graag op wanneer een onderzoek dat vraagt. Ik ben gelukkig hier ook razend snel in, Mijn hele leven lang heb ik ervaring met computers, en dat komt gelukkig goed van pas.
+
+Naast techniek ben ik sterk in communicatie en kennisdeling. Ik heb scheikundelessen en professionele cursussen gegeven en ik leg complexe materie graag begrijpelijk uit. Bij zowel Odido als Teamspot en in mijn studie heb ik laten zien dat ik duidelijk communiceer en professioneel én wetenschappelijk kan rapporteren. Ik geloof dat ik met mijn skillset een aanwinst ben voor het Team Opsporing.
+
+Graag licht ik mijn motivatie en voorbeelden toe in een gesprek.
+Ik zie uw reactie graag tegemoet!
+
+Met vriendelijke groet,
+Tom de Groot
