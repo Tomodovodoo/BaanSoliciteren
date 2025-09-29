@@ -1,7 +1,7 @@
 {
   "PotentialSatisfaction": 6.0,
-  "NextAction": "Scan JD; solliciteer bij stack-match; benadruk Python + pipelines.",
-  "Response": "Unsent",
+  "NextAction": "Solicitatie verlopen",
+  "Response": "Rejected",
   "Interviewed": false,
   "Hired": false,
   "Rejected": false

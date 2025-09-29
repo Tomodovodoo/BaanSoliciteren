@@ -1,0 +1,36 @@
+Geachte heer De Jong en mevrouw Van Middelaar, 
+ 
+Cybercrime klinkt al spannend. Van de Snowden film tot documentaires over ANOM 
+en Operatie Sky, ik heb al langer gefascineerd gekeken hoe data het verschil kan 
+maken tussen een vermoeden en een doorbraak. Daarom wil ik mijn 
+datavaardigheden inzetten bij de bestrijding van (cyber)crime. Bij Team Cybercrime 
+Noord-Nederland zou ik graag mijn skills willen inzetten om dit ook te doen. 
+Mijn bachelorscriptie is een goed voorbeeld voor een recent data project. Met gebruik 
+van depth-first search en eigen algoritmes voor dataset constructie werkte ik aan 
+graph neural networks voor NMR-voorspellingen. Ik programmeerde in Python met 
+TensorFlow en Git, getraind op de HPC met Linux hardware acceleratie en 
+documenteerde keuzes en evaluaties helder. Het resultaat was een robuust 
+framework en dataset-aanpak die voor het project en voor mijn persoonlijke 
+ontwikkeling nuttig is. 
+Naast techniek ben ik sterk in communicatie en samenwerking. Ik gaf 
+scheikundelessen en professionele cursussen, hielp van jong tot oud over de telefoon, 
+en ben makkelijk in het praten. Ik ben nieuwsgierig en praktisch ingesteld: van het 
+vrijwillig uitzoeken van juridische documenten tot het uitleggen van algoritmes. 
+Ik beteken iets voor de mensen om mij heen door mezelf te zijn, aardig, altijd een 
+open oor, en bied altijd mijn hulp aan wanneer mogelijk. Vragen hoe het met mijn 
+naasten is, er voor iemand zijn. Dit is zeker waar ik zelf nog in wil en kan groeien, 
+maar ik geloof dat mijn hart op de juiste plaats zit. 
+ 
+Voor de technische match: Ik heb in meerdere projecten SQL, TensorFlow, Git, API’s 
+en verschillende systemen gebruikt. Ik programmeer voornamelijk in Python, met 
+hier en daar een uitdaging in een andere taal. Ik nodig u zeker uit om op mijn GitHub 
+te kijken naar een deel van mijn projecten gemaakt in mijn vrije tijd.  Wat ik vooral wil laten zien hiermee, is dat ik van data houd. Projecten rondom 
+immigratie, vaccinaties, waterbeschikbaarheid, tot een database voor mijn kaartspel, 
+ik bouw de kennis om mij heen door naar data te kijken, en ik geloof dat ik de politie 
+hiermee kan helpen. 
+ 
+Tot slot: ik beschik momenteel nog niet over rijbewijs B; dit heb ik telefonisch 
+afgestemd met de heer De Jong en ik ben het traject gestart om dit te behalen. 
+ Graag licht ik mijn motivatie en voorbeelden verder toe in een gesprek. Ik zie uw 
+reactie graag tegemoet.  Met vriendelijke groet, 
+Tom de Groot 

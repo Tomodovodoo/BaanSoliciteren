@@ -1,0 +1,17 @@
+Geachte heer/mevrouw,
+
+AI is voor mij zowel een vak als een passie. Graag zet ik mijn ervaring en vaardigheden in voor jullie AI/ML Engineer positie bij Ilionx, om verder te leren en te bouwen.
+
+Tijdens mijn studie Scheikunde heb ik mijn AI-interesse uitgebouwd met een stevige basis in wiskunde, data-analyse en programmeren. In mijn bachelorscriptie werkte ik aan graph neural networks voor NMR-voorspellingen en tijdens mijn studie voerde ik diverse data- en AI-projecten uit, van eenvoudige text-to-speech, tot het inzetten van RL-bots voor een spel.
+
+Ik programmeer in Python en gebruik Git, TensorFlow en PyTorch. Daarnaast heb ik AI toegepast via APIs en lokaal gehoste modellen, van DeepSeek kwantisaties tot Stable Diffusion LORAs. Met de Azure AI stack ben ik minder vertrouwd, maar ik heb wel op remote HPC-clusters gewerkt en pak nieuwe omgevingen snel op.
+
+Ik communiceer vloeiend in Nederlands en Engels en licht keuzes beknopt toe richting business en techniek. Over jullie ervaringswens: ik heb geen vijf jaar specifieke Data & AI developerervaring, maar wel brede relevante ervaring in communicatie, projectmanagement en bug- en pentesten. Graag zet ik mijn ervaring in om te werken in een data-gedreven omgeving die snel verandert in de huidige AI-wereld.
+
+Regio Noord-Nederland past uitstekend; ik neem initiatief waar nodig en ben een sterke teamspeler. Ik solliciteer graag omdat ik geloof dat mijn kennis en leercurve snel waarde opleveren in deze rol. Ik heb ervaring met bugtesten, freelance coding en platformontwikkeling. Mijn GitHub deel ik graag ter onderbouwing van mijn persoonlijke data- en AI-projecten.
+
+
+Ik hoop snel terug te horen, ik ben beschikbaar voor 32-40 uur.
+
+Met vriendelijke groet,
+Tom de Groot

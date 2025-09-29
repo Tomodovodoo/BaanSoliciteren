@@ -1,0 +1,15 @@
+Geachte team Sopra Steria,
+
+Data en AI is voor mij zowel een vak als een passie. Graag zet ik mijn ervaring en vaardigheden in voor de AI/ML Engineer positie bij Sopra Steria, om verder te leren en te bouwen.
+
+Tijdens mijn studie Scheikunde heb ik mijn data- en AI-interesse uitgebouwd met een stevige basis in wiskunde, data-analyse en programmeren. In mijn bachelorscriptie ontwikkelde en onderzocht ik graph neural networks voor NMR-voorspellingen. Daarvoor ontwierp ik reproduceerbare datapipelines en datavalidaties met depth first search, preprocessing, en trainde en optimaliseerde ik het netwerk op een HPC-cluster via linux subshells.
+
+Ik programmeer in Python en gebruik Git, TensorFlow en PyTorch. Naast mijn scriptie heb ik AI toegepast via APIs en lokaal gehoste modellen, van DeepSeek kwantisaties tot Stable Diffusion LORAs en reinforcement learning bots voor een spel. Ook in mijn vrije tijd speel ik vaak met data, van CBS data-analyses tot Covid verspreidingsmodellen opzetten. Met de Azure AI stack ben ik minder vertrouwd, maar ik heb wel op remote HPC-clusters gewerkt en pak nieuwe omgevingen snel op.
+
+Ik communiceer vloeiend in Nederlands en Engels en leg complexe onderwerpen helder uit. Ik werk graag samen met anderen en hoop gelijkgestemden in jullie team te vinden. Ik breng plezier in het vak, een wetenschappelijk én praktisch oog voor problemen, en relevante ervaring en inzicht mee.
+
+
+Voor meer specifieke werk- en projectinformatie verwijs ik naar mijn CV en GitHub profiel. Ik licht mijn projecten en kennis graag toe in een gesprek. Ik ben beschikbaar voor 32-40 uur.
+
+Met vriendelijke groet,
+Tom de Groot
