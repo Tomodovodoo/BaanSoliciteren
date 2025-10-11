@@ -1,7 +1,7 @@
 {
   "PotentialSatisfaction": 9.3,
-  "NextAction": "Email Menno for the application.",
-  "Response": "Unsent",
+  "NextAction": "Wacht op interview datum.",
+  "Response": "Interview Scheduled",
   "Interviewed": false,
   "Hired": false,
   "Rejected": false

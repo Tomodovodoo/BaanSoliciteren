@@ -1,0 +1,21 @@
+Biosketch - Tom de Groot
+
+BSc in Chemistry with Chemistry of Life track. Bachelor thesis on graph neural networks for NMR prediction in Python.
+
+Versatile with biology specific programs like SnapGene, PyMol and BLAST. Additionally, worked and trained on Graph/relational-based data.
+
+Coding: Python; RDKit, TenserFlow/PyTorch, Scikit, and common libraries. Comfortable in big dataformats such as JSON, CSV, SQL/SQLite, XML. Large database handling and data analysis/statistics. Multiple small and large scale personal and work projects implementing these. (e.g. modelling vaccination risk, immigration data, automated speech to script tooling).
+
+Biostatistics: exposure to multi omics integration, ANOVA/MANOVA analysis, regression models, XGBoost, MLPs and other related Neural Network solutions.
+
+Biochemistry and lab: BSL 2 practice, worked on PCR, DNA and RNA isolation, solid understanding of protein and nucleic acid chemistry from the Chemistry of Life track, focussed on DNA and protein editing.
+
+Collaboration and communication: fully fluent Dutch and English, concise reporting for clinical and technical stakeholders, experience in Agile teams. Multiple years of work experience in project management and support roles, alongside freelance coding.
+
+Fit for the role: ready to analyze and integrate large omics datasets in heart failure, support clinicians, and develop validated tools and publishable results. Excited to travel to learn and collaborate.
+
+In short; recently graduated biochemist with a specialisation in coding and data sciences, excited for this opportunity.
+
+Phone: 06 31490416
+Email: tomthegreatest04@gmail.com
+GitHub (Coding/Data projects): https://github.com/Tomodovodoo
