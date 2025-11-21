@@ -1,51 +1,50 @@
-import argparse
+"""Plot PotentialSatisfaction for active jobs."""
 import matplotlib.pyplot as plt
-import pandas as pd
 from pathlib import Path
+import json
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--top", type=int, default=40)
-    args = parser.parse_args()
+    script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent.parent
+    sollicitaties = repo_root / "Solicitaties"
+    
+    if not sollicitaties.exists():
+        raise SystemExit(f"Solicitaties folder not found at: {sollicitaties}")
 
-    BASEPATH = Path(__file__).resolve().parent
-    csv_path = Path(str(BASEPATH) + "/CalculatedJobPotential.csv")
-    if not csv_path.exists():
-        raise SystemExit(f"CSV not found: {csv_path}")
+    jobs = []
 
-    df = pd.read_csv(csv_path)
+    for job_folder in sorted(sollicitaties.iterdir()):
+        if not job_folder.is_dir() or job_folder.name == "Archief":
+            continue
 
-    # Colommen van de dataset
-    title_col = "Job" if "Job" in df.columns else None
-    company_col = "Company" if "Company" in df.columns else None
-    sat_col = "PotentialSatisfaction" if "PotentialSatisfaction" in df.columns else None
+        stats_file = job_folder / "stats.json"
+        if not stats_file.exists():
+            continue
 
-    if not title_col or not sat_col:
-        raise SystemExit("Required columns not found. Need at least 'Job' (or your title col) and 'PotentialSatisfaction'.")
+        try:
+            data = json.loads(stats_file.read_text(encoding="utf-8"))
+            potential = data.get("PotentialSatisfaction")
+            
+            if potential is not None:
+                folder_name = job_folder.name
+                if "—" in folder_name:
+                    role, company = folder_name.split("—", 1)
+                    label = f"{role.replace('_', ' ').strip()} — {company.replace('_', ' ').strip()}"
+                else:
+                    label = folder_name.replace("_", " ")
+                
+                jobs.append({"label": label, "potential": float(potential)})
+        except Exception as e:
+            print(f"Warning: Could not read {job_folder.name}: {e}")
 
-    df_plot = df[[title_col, sat_col] + ([company_col] if company_col else [])].copy()
-    df_plot = df_plot.dropna(subset=[sat_col])
-    df_plot[sat_col] = pd.to_numeric(df_plot[sat_col], errors="coerce")
-    df_plot = df_plot.dropna(subset=[sat_col])
+    if not jobs:
+        raise SystemExit("No jobs with PotentialSatisfaction found!")
 
-    # Labels
-    if company_col:
-        df_plot["Label"] = df_plot.apply(
-            lambda r: f"{str(r[title_col]).strip()} — {str(r[company_col]).strip()}" if pd.notna(r[company_col]) and str(r[company_col]).strip() != "" else str(r[title_col]).strip(),
-            axis=1
-        )
-    else:
-        df_plot["Label"] = df_plot[title_col].astype(str)
+    jobs.sort(key=lambda x: x["potential"], reverse=True)
+    labels = [j["label"] for j in jobs]
+    values = [j["potential"] for j in jobs]
 
-    # Sorteren en limits
-    df_plot = df_plot.sort_values(sat_col, ascending=False)
-    if args.top and len(df_plot) > args.top:
-        df_plot = df_plot.head(args.top)
-
-    labels = df_plot["Label"].tolist()
-    values = df_plot[sat_col].tolist()
-
-    # Plot + Opslaan
+    # Create plot
     fig_width = max(10, min(28, 0.45 * len(labels) + 6))
     fig_height = 8
 
@@ -53,22 +52,18 @@ def main():
     plt.bar(range(len(labels)), values)
     plt.xticks(range(len(labels)), labels, rotation=60, ha="right")
     plt.ylabel("PotentialSatisfaction")
-    plt.title("Potential Jobs — PotentialSatisfaction (sorted high → low)")
+    plt.title(f"Active Job Potential — PotentialSatisfaction (sorted high → low, n={len(jobs)})")
     plt.tight_layout()
 
     for i, v in enumerate(values):
-        try:
-            v_val = float(v)
-            plt.text(i, v_val, f"{v_val:.1f}", ha="center", va="bottom", fontsize=8)
-        except Exception:
-            pass
+        plt.text(i, v, f"{v:.1f}", ha="center", va="bottom", fontsize=8)
 
-    # >>> Save to Baan_analyze
-    save_dir = Path(__file__).resolve().parent.parent
+    # Save
+    save_dir = script_dir.parent
     save_dir.mkdir(parents=True, exist_ok=True)
     save_path = save_dir / "job_potential.png"
     plt.savefig(save_path, dpi=200, bbox_inches="tight")
-    print(f"Saved plot to: {save_path}")
+    print(f"✓ Saved plot ({len(jobs)} active jobs) to: {save_path}")
 
 if __name__ == "__main__":
     main()

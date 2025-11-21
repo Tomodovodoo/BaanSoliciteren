@@ -1,13 +1,3 @@
-# Due to GDPR, some personal data from Job Listings can't be included in the repository, as some listing contain (company) emailadresses and phone numbers tied to individuals
-# Therefore, the following types of files will be excluded from the repository
-JobTracker.csv
-relevant_info.json
-
-# --- Python bytecode & cache ---
-__pycache__/
-*.py[cod]
-*$py.class
-
 # --- Virtual environments ---
 .venv/
 venv/
@@ -44,3 +34,16 @@ MANIFEST
 # --- Logs / temp ---
 *.tmp
 *.temp
+
+# --- Sensitive credentials---
+credentials.json
+token.json
+*.token
+*_token.json
+
+# --- Email data (contains personal info) ---
+Email/**/*.json
+Email/Processing/
+
+# --- Generated job lists (can be regenerated) ---
+all_jobs_list.json
