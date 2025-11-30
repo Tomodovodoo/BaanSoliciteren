@@ -6,10 +6,10 @@ from pathlib import Path
 from datetime import date
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = SCRIPT_DIR.parent if (SCRIPT_DIR.parent / "Solicitaties").exists() else SCRIPT_DIR
+PROJECT_ROOT = SCRIPT_DIR.parent
 
 SOLICITATIES_DIR = PROJECT_ROOT / "Solicitaties"
-ARCHIVE_DIR = PROJECT_ROOT / "Solicitaties" / "Archief"
+ARCHIVE_DIR = PROJECT_ROOT / "Solicitaties" / "1.Archief"
 EMAIL_ONGOING_DIR = PROJECT_ROOT / "Email" / "Ongoing"
 EMAIL_ARCHIVE_DIR = PROJECT_ROOT / "Email" / "Archive"
 
@@ -185,7 +185,7 @@ def update_stats():
         if ongoing_folder.exists():
             for email_file in ongoing_folder.glob("*.json"):
                 try:
-                    with open(email_file, 'r', encoding='utf-8') as f:
+                    with open(email_file, 'r', encoding='utf-8-sig') as f:
                         email_data = json.load(f)
                         company_emails.append(email_data)
                 except Exception as e:
@@ -194,7 +194,7 @@ def update_stats():
         if archive_folder.exists():
             for email_file in archive_folder.glob("*.json"):
                 try:
-                    with open(email_file, 'r', encoding='utf-8') as f:
+                    with open(email_file, 'r', encoding='utf-8-sig') as f:
                         email_data = json.load(f)
                         company_emails.append(email_data)
                 except Exception as e:

@@ -1,0 +1,50 @@
+At SciSure we're looking for a Software Tester to join our team.
+Full-time · Netherlands: Groningen Office
+
+Help build the future of science
+At SciSure, we believe scientific progress should never be slowed down by fragmented systems or compliance burdens. We’re here to empower researchers through powerful, user-centric software, and we’re just getting started. As part of our innovative QA team, you'll help ensure our platform maintains the quality and reliability that scientists around the world depend on every day.
+
+What we offer
+A one-year contract, with the intention to extend
+Salary between €3.160 and €4.514 per month based on full-time, depending on experience
+Minimum of 30 vacation days based on full-time, if you need more we trust you to take what you need in coordination with your team
+Training opportunities
+Hybrid working: a practical mix of home and our office in Groningen
+A good home office setup
+Being part of a driven team of developers and colleagues who work closely together
+· Monthly drinks at fun outings with colleagues
+
+Why join SciSure?
+Work on one large-scale platform: No fragmented projects — we build long-term solutions
+Make meaningful impact: Your work supports scientists tackling global challenges
+Collaborate and grow: We value autonomy, open feedback, and peer mentorship
+Strong engineering culture: Quality, code coverage, and CI/CD are taken seriously
+Product-driven mindset: You advocate for the user and help define what “done” means
+
+The role
+As a QA Engineer at SciSure, you are part of one of our product teams and take ownership of testing throughout the software lifecycle. You write and automate test cases, join sprint planning and refinement, and keep an eye on quality metrics such as test results and coverage. You work closely with developers and product owners and make sure the user’s perspective is included in our release decisions.
+You help keep our CI/CD pipelines healthy, share best practices with the team, and look for practical ways to improve how we build and deliver our software.
+
+What you’ll do
+Design and execute test plans (manual and automated) for component, integration, and end-to-end testing
+Define and automate acceptance criteria based on product specs
+Use tools like Cypress, Playwright, or Vitest to create scalable test suites
+· Collaborate with developers and product owners during agile ceremonies
+Monitor and report on test coverage, quality indicators, and performance
+Support and improve CI/CD pipelines (GitLab, Bitbucket
+Help guide junior QA engineers and foster quality awareness across teams
+
+What you bring
+3+ years of experience in QA or software testing
+Hands-on experience with modern automation tools (e.g. Cypress, Playwright, Vitest)
+Knowledge of QA best practices and ability to advocate them in dev teams
+Excellent communication skills in English (written and spoken)
+Ownership mindset, detail-oriented, and customer-focused
+Eligible to work in the Netherlands or the U.S. (no outsourcing or B2B setups)
+
+Bonus points if you have...
+Experience testing large-scale web applications
+Familiarity with PHP, Vue.js, or .NET
+Experience with unit testing frameworks (phpunit, junit)
+Knowledge of CI/CD pipelines, Docker, AWS or Terraform
+Understanding of web/database performance optimization

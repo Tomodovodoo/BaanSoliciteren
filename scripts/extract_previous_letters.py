@@ -8,7 +8,7 @@ from pathlib import Path
 
 def extract_previous_letters():
     """Extract all cover letters from the archive folder."""
-    archive_path = Path(__file__).parent / "Solicitaties" / "1.Archief"
+    archive_path = Path(__file__).parent.parent / "Solicitaties" / "1.Archief"
     
     letters = {}
     
@@ -35,7 +35,7 @@ def extract_previous_letters():
 
 def write_letters_json(letters):
     """Write letters to JSON file."""
-    output_path = Path(__file__).parent / "Vorige solicitatie brieven.json"
+    output_path = Path(__file__).parent.parent / "data" / "Vorige solicitatie brieven.json"
     
     # Create JSON with proper formatting
     with open(output_path, 'w', encoding='utf-8') as f:

@@ -1,0 +1,68 @@
+AI Engineer
+Overview
+
+About us
+We are the independent expert in assurance and risk management. Driven by our purpose, to safeguard life, property, and the environment, we empower our customers and their stakeholders with facts and reliable insights so that critical decisions can be made with confidence.
+As a trusted voice for many of the world’s most successful organizations, we use our knowledge to advance safety and performance, set industry benchmarks, and inspire and invent solutions to tackle global transformations.
+
+About the role
+We are looking for an AI Engineer to help shape the future of certification services. This is more than building AI systems, it’s about redefining how we work and deliver value in Business Assurance.
+You will work as an internal entrepreneur within our global AI Program, collaborating with process owners, product managers, and end-users to design solutions that transform workflows and enhance customer experience. You will also connect with the global AI community at DNV, sharing knowledge and driving innovation.
+
+What You Will Do
+- Data & Preparation: Connect to diverse data sources, implement Retrieval-Augmented Generation (RAG) pipelines, and structure data for optimal use in LLMs.
+- Generative AI Development: Design, deploy and update production-grade AI systems using LLMs and multimodal models. Fine-tune models, optimize prompts, and integrate RAG for context-aware responses.
+- AI DevOps & MLOps: Set up CI/CD pipelines, manage containerization (Docker, Kubernetes), and automate retraining using MLflow and cloud-native tools.
+- Communication & Impact: Deliver demos (Streamlit), prototypes, and reports that make AI systems tangible for stakeholders.
+- Continuous Innovation: Stay ahead of trends, experiment with frameworks like LangChain, Azure OpenAI, and others.
+
+Wij zoeken een AI Engineer die de toekomst van certificeringsdiensten helpt vormgeven. Dit gaat verder dan het bouwen van AI-systemen – het draait om het herdefiniëren van hoe wij werken en waarde leveren binnen Business Assurance.
+Je werkt als interne ondernemer binnen ons global AI-programma en gaat in gesprek met proceseigenaren, productmanagers en eindgebruikers om oplossingen te ontwerpen die workflows transformeren en de klantervaring verbeteren. Daarnaast maak je deel uit van de wereldwijde AI-community van DNV, waar kennisdeling en innovatie centraal staan.
+
+Wat ga je doen?
+- Data & Voorbereiding: Koppelen van diverse databronnen, implementeren van Retrieval-Augmented Generation (RAG)-pipelines en data structureren voor optimaal gebruik in LLM’s.
+- Generative AI Ontwikkeling: Ontwerpen en implementeren van productieklare AI-systemen met LLM’s. Fine-tunen van modellen, optimaliseren van prompts en integreren van RAG voor contextbewuste antwoorden.
+- AI DevOps & MLOps: Opzetten van CI/CD-pipelines, beheren van containerisatie (Docker, Kubernetes) en automatiseren van retraining met MLflow en cloud-native tools.
+- Communicatie & Impact: Presenteren van demos, prototypes en rapporten die AI tastbaar maken voor stakeholders.
+- Continue Innovatie: Vooroplopen in trends en experimenteren met frameworks zoals LangChain en Azure OpenAI.
+
+What we offer
+- A dynamic role in an international environment with local team spirit.
+- Flexible working hours and hybrid work (60% office presence).
+- 30 vacation days and attractive secondary benefits.
+- Opportunities for professional growth and innovation.
+- A culture built on We Care, We Dare, We Share
+
+About you
+To be successful in the role you should :
+- Master’s degree in Data Science, Computer Science, or related field.
+- Hands-on experience with LLMs, prompt engineering, and RAG pipelines.
+- Strong Python engineering skills and experience with Databricks, MLflow, and Azure.
+- Familiarity with CI/CD, Docker, Kubernetes, and Git.
+- Curiosity, adaptability, and a collaborative mindset.
+- Excellent communication skills in English, Dutch language skills are a plus.
+
+Benefits
+Profit Share
+You’ll be part of our global profit share scheme that means we all share in our success as a business. If we profit, so do you. This will be part of our Total Compensation approach each year and depends on our year-end results.
+
+Insurance
+Taking care of you with travel, life, and accident insurance.
+
+Pension Schemes
+We care about your long-term financial security and prioritize pension and retirement benefits to reflect our caring values.
+
+Professional Development
+We believe in the 70/20/10 learning model, where 70% of your learning comes from performing your everyday tasks and working on different projects, new areas and initiatives to gain new skills. 20% from working with others and mentoring and the rest from formal education.
+
+Hybrid Working
+Adapting to the changing world of work around the world.
+
+Purpose-led organization
+You become part of a world-leading company where we know and live our purpose; to safeguard life, property, and the environment, with the opportunity to tackle global change through your work.
+
+Supportive and caring culture
+We offer opportunities to connect through social and professional networks. Our largest community CONNECT, organizes after-work events and informal meetings throughout the year.
+
+Attractive rewards
+We focus on work/life balance and offer employees flexible working hours and workplace, annual vacation allowance, competitive pension, insurance, and a global profit share scheme.

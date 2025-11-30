@@ -1,0 +1,29 @@
+Jouw rol
+In de functie van IT Support Specialist in de regio Groningen ben je verantwoordelijk voor het aannemen, analyseren en oplossen van meldingen. Je werkt in een enterprise-omgeving waar betrouwbaarheid, beveiliging en nauwkeurigheid belangrijk zijn. Omdat je niet alleen 1e lijn maar vooral 2e lijn incidenten behandelt, krijg je te maken met uitdagende vraagstukken die je zelfstandig oplost of samen met de 3e lijn analyseert.
+
+Jouw werkzaamheden zijn onder andere:
+Registreren en analyseren van incidenten in systemen zoals Topdesk of ServiceNow.
+Zelfstandig oplossen van 2e lijn tickets, bijvoorbeeld accountbeheer, rechtenproblemen, VPN-storingen en Microsoft 365-issues.
+Ondersteunen van gebruikers bij applicaties als Outlook, Teams, SharePoint, Exchange en OneDrive.
+Beheren van accounts en groepen in Active Directory en Azure AD.
+Remote support leveren via Intune of Citrix en documenteren volgens ITIL-richtlijnen.
+Escaleren naar de 3e lijn en meekijken om je kennis verder uit te breiden.
+
+Wat kun jij van ons verwachten?
+Bij InWork krijg je de kans om ervaring op te doen in een complexe enterprise-omgeving en tegelijkertijd jezelf verder te ontwikkelen. Je wordt begeleid door een fieldmanager die jou helpt de juiste stappen in je carrière te zetten. Wij ondersteunen jou met certificeringen en trainingen, zodat je doorgroeit richting systeembeheer, cloud of security.
+
+Wat wij jou bieden:
+Een salaris tussen €2.500 en €3.200 bruto per maand, afhankelijk van ervaring.
+Doorgroeimogelijkheden richting systeembeheer, cloud of security.
+Een leaseauto, reiskostenvergoeding of volledig OV-abonnement.
+Certificeringen en trainingen zoals AZ-900, MS-900, ITIL en MD-102.
+De verplichting (én kans) om jouw ITIL-certificaat binnen 3 maanden na start te behalen.
+Zekerheid via de inlenersbeloning: eerlijk salaris en voorwaarden gelijk aan vaste collega’s bij de opdrachtgever.
+
+Wat verwachten we van jou?
+Minimaal 1 tot 2 jaar ervaring in een IT-servicedeskfunctie.
+Een afgeronde mbo- of hbo-opleiding in de richting van ICT/IT.
+Ervaring met het behandelen van 1e lijn tickets en werken binnen een ITIL-omgeving.
+Kennis van Microsoft 365, Active Directory en basis netwerkbeheer.
+Uitstekende beheersing van de Nederlandse taal.
+Bereidheid om tot één uur te reizen naar de werklocatie.

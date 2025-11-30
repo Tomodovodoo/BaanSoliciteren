@@ -7,7 +7,7 @@ from pathlib import Path
 
 def get_ongoing_deadlines():
     """Extract deadlines from ongoing job applications."""
-    base_path = Path(__file__).parent / "Solicitaties"
+    base_path = Path(__file__).parent.parent / "Solicitaties"
     
     # Response values that indicate rejection or non-ongoing status
     NOT_ONGOING = {"Rejected"}
@@ -52,7 +52,7 @@ def get_ongoing_deadlines():
 
 def write_deadlines_file(deadlines):
     """Write deadlines to deadlines.txt."""
-    output_path = Path(__file__).parent / "deadlines.txt"
+    output_path = Path(__file__).parent.parent / "deadlines.txt"
     
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write("ONGOING JOB APPLICATION DEADLINES\n")

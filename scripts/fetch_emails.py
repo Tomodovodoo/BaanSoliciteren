@@ -7,10 +7,19 @@ from datetime import datetime
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 
-CREDENTIALS_PATH = Path("credentials.json")
+SCRIPT_DIR = Path(__file__).parent
+CREDENTIALS_PATH = SCRIPT_DIR / "credentials.json"
 TOKEN_PATH = Path.home() / ".gmail-mcp" / "token.json"
-OUTPUT_DIR = Path("Email/Processing")
-CONFIG_PATH = Path("config/fetch_emails_config.json")
+OUTPUT_DIR = SCRIPT_DIR.parent / "Email" / "Processing"
+CONFIG_PATH = SCRIPT_DIR / "config" / "fetch_emails_config.json"
+UNRELATED_SENDERS_FILE = SCRIPT_DIR.parent / "Email" / "Processing" / "unrelated_email_senders.json"
+
+# Job-related keywords for safety check
+JOB_KEYWORDS = [
+    'sollicitatie', 'vacature', 'application', 'vacancy',
+    'interview', 'recruitment', 'career', 'job',
+    'werving', 'selectie', 'hiring', 'baan',
+]
 
 def load_config():
     """Load configuration from config file."""
@@ -81,6 +90,44 @@ def get_header(headers, name):
             return header['value']
     return None
 
+def load_spam_list():
+    """Load list of unrelated email senders."""
+    if not UNRELATED_SENDERS_FILE.exists():
+        return []
+    with open(UNRELATED_SENDERS_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def extract_email(from_field):
+    """Extract email address from 'From' field."""
+    if not from_field:
+        return None
+    
+    import re
+    # Look for email in angle brackets
+    match = re.search(r'<([^>]+)>', from_field)
+    if match:
+        return match.group(1).strip().lower()
+    
+    # Otherwise assume entire field is email
+    return from_field.strip().lower()
+
+def is_spam_sender(email_from, subject, spam_list):
+    """Check if email is from known spam sender."""
+    sender_email = extract_email(email_from)
+    if not sender_email:
+        return False
+    
+    # Check against spam list
+    if sender_email in spam_list:
+        # Safety check: never filter job-related emails
+        subject_lower = (subject or '').lower()
+        for keyword in JOB_KEYWORDS:
+            if keyword in subject_lower:
+                return False  # Don't filter job-related keywords
+        return True
+    
+    return False
+
 def fetch_emails():
     """Fetch emails from Gmail and save to Processing folder."""
     runtime_date = datetime.now()
@@ -131,9 +178,14 @@ def fetch_emails():
         print(f"\n✓ Updated cutoff date to: {runtime_date_str}")
         return
     
+    # Load spam filter
+    spam_list = load_spam_list()
+    if spam_list:
+        print(f"  Loaded spam filter with {len(spam_list)} blocked senders\n")
+    
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     
-    processed, skipped = 0, 0
+    processed, skipped, filtered_spam = 0, 0, 0
     
     for msg in all_messages:
         email_id = msg['id']
@@ -150,6 +202,16 @@ def fetch_emails():
         ).execute()
         
         headers = email['payload']['headers']
+        
+        # Check spam filter
+        email_from = get_header(headers, 'From')
+        email_subject = get_header(headers, 'Subject')
+        
+        if spam_list and is_spam_sender(email_from, email_subject, spam_list):
+            filtered_spam += 1
+            if filtered_spam <= 3:  # Show first 3 filtered emails
+                print(f"  ✓ Filtered spam: {email_subject[:50]}")
+            continue
         
         email_data = {
             "email_id": email_id,
@@ -173,6 +235,8 @@ def fetch_emails():
             print(f"  [{processed}/{len(all_messages)}] Processing...")
     
     print(f"\n✓ Complete! Processed: {processed}, Skipped: {skipped}")
+    if filtered_spam > 0:
+        print(f"✓ Filtered spam: {filtered_spam} emails")
     print(f"  Output: {OUTPUT_DIR.absolute()}")
     
     config = load_config()

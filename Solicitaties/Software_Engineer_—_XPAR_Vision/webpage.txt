@@ -1,0 +1,27 @@
+Software Engineer
+An ice-cold beer or a nice glass of wine every now and then, we are fans! But have you ever thought about the manufacturing process of a glass bottle? We have! In fact, it is our daily work to optimize the production process of glass bottles and jars for our customers in the global glass packaging industry.
+XPAR Vision develops, installs and implements unique sensor and robot technology, helping companies in the glass industry, to meet the high demands of quality of companies like Heineken and Coca-Cola, to make glass products lighter, stronger and with a lower carbon footprint. We have already installed more than 600 systems in over 35 countries, making us a specialist and market leader.
+We believe that glass is the best packaging material in terms of experience, quality and, above all, durability. Our goal is therefore that more and more food manufacturers opt for glass as packaging material. Which directly contributes to a more sustainable world: minimizing the carbon footprint and load on our environment.
+Over the past few years, we have developed rapidly and established ourselves firmly in the market. We want to continue and further optimize this process, which is why we are looking for a software engineer.
+We are looking for a software engineer to work on innovative automation projects using robotics to improve the glass bottle manufacturing process. These include projects which are truly unique in the world. Although these projects involve Robotics, PLCs, and other low-level hardware, a lot of high- level software is also used and needed for these projects, which is where you come in!
+As a Software Engineer at XPAR Vision BV, you will develop and maintain software solutions and stay up to date with emerging trends and technologies in software engineering and robotics.
+The work includes mostly programming and testing C++, Python, JavaScript and Robot specific code, but also integration testing with the actual hardware at our shopfloor and possibly on-site.
+
+Must have:
+Proficient in programming using (Modern) C++, Rust
+Bachelor’s or Master’s degree in Computer Science, Robotics, Industrial automation or Mechatronics
+Good problem-solving and analytical skills
+
+Nice to have but not required:
+Proficiency in programming using Python and JavaScript
+Experience with code versioning (We use GitLab)
+Willingness to travel abroad to customers a few times a year
+Experience programming PLCs
+
+Environment
+You will be part of an engineering team working on new functionality for our systems. You will collaborate with cross-functional teams such as field service engineers and data scientists to develop and integrate software modules.
+
+What we offer
+· A challenging position in an international environment. You get a lot of freedom to make an impact and do your job your way.
+· A salary between €3,300 – €4,600, depending on experience and qualifications
+· A favorable pension arrangement and 30 days holiday per year.

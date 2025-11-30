@@ -1,26 +1,16 @@
 """Organize emails from Processing into job-specific folders."""
 import json
+import re
 from pathlib import Path
 import shutil
 
-PROCESSING_DIR = Path("Email/Processing")
-ONGOING_DIR = Path("Email/Ongoing")
-ARCHIVE_DIR = Path("Email/Archive")
-SOLICITATIES_DIR = Path("Solicitaties")
+SCRIPT_DIR = Path(__file__).parent
+PROCESSING_DIR = SCRIPT_DIR.parent / "Email" / "Processing"
+ONGOING_DIR = SCRIPT_DIR.parent / "Email" / "Ongoing"
+ARCHIVE_DIR = SCRIPT_DIR.parent / "Email" / "Archive"
+SOLICITATIES_DIR = SCRIPT_DIR.parent / "Solicitaties"
 UNRELATED_SENDERS_FILE = PROCESSING_DIR / "unrelated_email_senders.json"
 REJECTED_COMPANIES_FILE = PROCESSING_DIR / "rejected_companies.json"
-
-# Mapping from company field to Solicitaties folder name
-COMPANY_TO_FOLDER = {
-    "UMCG": ["Analist_Genoomdiagnostiek_—_UMCG", "Analist_HLO_kwaliteitszorg_—_UMCG", "Statistisch_Biologist_—_UMCG"],
-    "DUO": ["Junior_Test_Engineer_—_DUO", "Kwaliteit_en_Servicemanagement_—_Duo"],
-    "Specialist_Datatactiek_Team_Opsporing_—_Politie": ["Specialist_Datatactiek_Team_Opsporing_—_Politie"],
-    "Data_Scientist_Team_Cybercrime_—_Politie": ["Data_Scientist_Team_Cybercrime_—_Politie"],
-    "DataNorth": ["AI_Consultant_—_DataNorth"],
-    "Ilionx": ["AI_ML_Engineer_—_Ilionx"],
-    "Sopra Steria": ["Data_Scientist_—_Sopra_Steria", "Data_Engineer_—_Sopra_Steria"],
-    "Teijin Aramid": ["Chemisch_Analist_—_Teijin_Aramid"],
-}
 
 def load_json_file(file_path):
     """Load JSON file or return empty list if doesn't exist."""
@@ -34,46 +24,135 @@ def save_json_file(file_path, data):
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def get_job_folder(company, subject):
-    """Determine the correct job folder based on company and subject."""
-    if company not in COMPANY_TO_FOLDER:
+def extract_sender_domain(email_from):
+    """Extract domain from email sender."""
+    # Extract email from "Name <email@domain.com>" format
+    match = re.search(r'<([^>]+)>', email_from)
+    if match:
+        email = match.group(1)
+    else:
+        email = email_from
+    
+    # Extract domain
+    if '@' in email:
+        return email.split('@')[-1].lower()
+    return None
+
+def get_active_job_folders():
+    """Get list of active (non-archived) job folders."""
+    active_jobs = []
+    
+    if not SOLICITATIES_DIR.exists():
+        return active_jobs
+    
+    for folder in SOLICITATIES_DIR.iterdir():
+        if folder.is_dir() and folder.name != "1.Archief":
+            active_jobs.append(folder.name)
+    
+    return active_jobs
+
+def is_job_archived(job_folder_name):
+    """Check if a job folder exists in the archive."""
+    archive_path = SOLICITATIES_DIR / "1.Archief" / job_folder_name
+    return archive_path.exists()
+
+def parse_job_folder_name(folder_name):
+    """Parse job folder name to extract job title and company."""
+    # Format: JobTitle_—_Company
+    parts = folder_name.split('_—_')
+    if len(parts) == 2:
+        job_title = parts[0].replace('_', ' ').lower()
+        company = parts[1].replace('_', ' ').lower()
+        return job_title, company
+    return None, None
+
+def calculate_match_score(folder_name, sender_email, subject, body):
+    """Calculate how well an email matches a job folder."""
+    job_title, company = parse_job_folder_name(folder_name)
+    if not job_title or not company:
+        return 0
+    
+    score = 0
+    sender_domain = extract_sender_domain(sender_email)
+    subject_lower = (subject or '').lower()
+    body_lower = (body or '').lower()[:500]  # Check first 500 chars of body
+    
+    # Check if sender domain matches company
+    if sender_domain:
+        company_parts = company.split()
+        for part in company_parts:
+            if len(part) > 3 and part in sender_domain:
+                score += 50  # Strong match on sender domain
+    
+    # Check for company name in subject/body
+    company_keywords = company.split()
+    for keyword in company_keywords:
+        if len(keyword) > 2:  # Skip very short words
+            if keyword in subject_lower:
+                score += 20
+            if keyword in body_lower:
+                score += 10
+    
+    # Check for job title keywords in subject/body
+    job_keywords = job_title.split()
+    for keyword in job_keywords:
+        if len(keyword) > 2:  # Skip very short words like "2a"
+            if keyword in subject_lower:
+                score += 15
+            if keyword in body_lower:
+                score += 5
+    
+    # Special handling for specific identifiers (like vacancy numbers)
+    # Extract potential vacancy numbers from folder name
+    vacancy_matches = re.findall(r'\d{5,}', folder_name)
+    for vacancy in vacancy_matches:
+        if vacancy in subject_lower or vacancy in body_lower:
+            score += 100  # Very strong match on vacancy number
+    
+    return score
+
+def get_job_folder(company, subject, email_from, body=""):
+    """Determine the correct job folder based on email content."""
+    # Get active job folders
+    active_jobs = get_active_job_folders()
+    
+    if not active_jobs:
         return None
     
-    folders = COMPANY_TO_FOLDER[company]
+    # If company is specified, filter to matching companies first
+    if company and company != "DISCARD":
+        company_lower = company.lower()
+        matching_jobs = []
+        
+        for folder in active_jobs:
+            _, folder_company = parse_job_folder_name(folder)
+            if folder_company and company_lower in folder_company:
+                matching_jobs.append(folder)
+        
+        # If we have company matches, use those; otherwise use all active jobs
+        candidate_jobs = matching_jobs if matching_jobs else active_jobs
+    else:
+        candidate_jobs = active_jobs
     
-    if len(folders) == 1:
-        return folders[0]
+    # Score each candidate job
+    best_match = None
+    best_score = 0
     
-    if company == "UMCG":
-        subject_lower = subject.lower()
-        if "genoom" in subject_lower:
-            return "Analist_Genoomdiagnostiek_—_UMCG"
-        elif "kwaliteit" in subject_lower or "hlo" in subject_lower:
-            return "Analist_HLO_kwaliteitszorg_—_UMCG"
-        elif "statist" in subject_lower or "biolog" in subject_lower:
-            return "Statistisch_Biologist_—_UMCG"
-        else:
-            return folders[0]
+    for folder in candidate_jobs:
+        score = calculate_match_score(folder, email_from, subject, body)
+        if score > best_score:
+            best_score = score
+            best_match = folder
     
-    if company == "DUO":
-        subject_lower = subject.lower()
-        if "test engineer" in subject_lower or "junior" in subject_lower:
-            return "Junior_Test_Engineer_—_DUO"
-        elif "kwaliteit" in subject_lower or "service" in subject_lower:
-            return "Kwaliteit_en_Servicemanagement_—_Duo"
-        else:
-            return folders[0]
+    # Only return a match if we have reasonable confidence (score > 10)
+    if best_score > 10:
+        return best_match
     
-    if company == "Sopra Steria":
-        subject_lower = subject.lower()
-        if "scientist" in subject_lower:
-            return "Data_Scientist_—_Sopra_Steria"
-        elif "engineer" in subject_lower:
-            return "Data_Engineer_—_Sopra_Steria"
-        else:
-            return folders[0]
+    # Fallback: if company specified, return first matching folder
+    if company and company != "DISCARD" and candidate_jobs:
+        return candidate_jobs[0]
     
-    return folders[0]
+    return None
 
 def organize_emails():
     """Process emails in Processing folder and organize into job-specific folders."""
@@ -96,13 +175,14 @@ def organize_emails():
     
     for email_file in email_files:
         try:
-            with open(email_file, 'r', encoding='utf-8') as f:
+            with open(email_file, 'r', encoding='utf-8-sig') as f:
                 email_data = json.load(f)
             
             company = email_data.get('company')
             response = email_data.get('response')
             email_from = email_data.get('from', '')
             subject = email_data.get('subject', '')
+            body = email_data.get('body', '')
             
             if company is None and response is None:
                 skipped += 1
@@ -118,14 +198,17 @@ def organize_emails():
                 print(f"  ✓ Discarded: {subject[:50]}")
                 continue
             
-            job_folder = get_job_folder(company, subject)
+            job_folder = get_job_folder(company, subject, email_from, body)
             
             if not job_folder:
                 print(f"  ⚠ {email_file.name}: Unknown company '{company}', skipping")
                 skipped += 1
                 continue
             
-            if response in ["Rejected", "Expired"]:
+            # Check if job is archived - if so, always route to Archive
+            job_is_archived = is_job_archived(job_folder)
+            
+            if response in ["Rejected", "Expired"] or job_is_archived:
                 dest_base = ARCHIVE_DIR
                 dest_folder = dest_base / job_folder
                 dest_file = dest_folder / email_file.name
@@ -136,7 +219,11 @@ def organize_emails():
                 dest_folder.mkdir(parents=True, exist_ok=True)
                 shutil.move(str(email_file), str(dest_file))
                 archived += 1
-                print(f"  ✓ Archived ({response}): {job_folder}")
+                
+                if job_is_archived:
+                    print(f"  ✓ Archived (Job Archived): {job_folder}")
+                else:
+                    print(f"  ✓ Archived ({response}): {job_folder}")
                 print(f"    {subject[:60]}\n")
             else:
                 dest_base = ONGOING_DIR

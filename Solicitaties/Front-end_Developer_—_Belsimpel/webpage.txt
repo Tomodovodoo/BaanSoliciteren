@@ -1,0 +1,40 @@
+Bouw mee aan onze apps - en aan je carrière
+Bij Gomibo bouwen we veel zelf – vooral waar maatwerk echt het verschil maakt. We gebruiken open-source libraries waar dat logisch is, en ontwikkelen eigen oplossingen wanneer standaardtools tekortschieten. Zo bouwen we de webshops en tools die actief zijn in meer dan 30 Europese landen. Als Junior Frontend Engineer (Software Engineer I) werk je vanaf dag één mee aan productiecode, bouw je mee aan vette features en leer je werken met dezelfde tools en workflows als de rest van het team.
+
+Wat ga je doen?
+Je wordt onderdeel van een multidisciplinair team met frontend- en backend-engineers, product designers en product managers.
+Voorbeelden van dingen die je kunt doen:
+●     UI-components bouwen in React
+●     Leren werken met GitLab, Vite, React Router v7 en Docker (we gaan uit van basiskennis van JavaScript/TypeScript en Git)
+●     Layoutbugs fixen en oudere code refactoren om deze beter onderhoudbaar te maken
+●     Code van andere engineers reviewen en pair programming
+●     Product designs tot leven brengen en helpen bij het finetunen van onze UX
+●     Uitzoeken waarom een dropdown alleen stukgaat in Firefox op één specifieke versie van macOS
+Kom je er even niet uit? Geen probleem – er is altijd iemand om je te helpen, en we ondersteunen je in het ontwikkelen van zelfvertrouwen in je code én je keuzes.
+
+Onze tech & workflow
+●     Frontend: React, React Router v7 (Remix v2), TypeScript, Vite, CSS, Jest, Storybook, Chromatic
+●     Platform: GitLab voor versiebeheer, code reviews en CI
+●     Infra: Docker, Sentry, Kubernetes, Prometheus
+●     Werkwijze: Agile workflow, daily stand-ups, pair programming, en een cultuur van opbouwende feedback geven én ontvangen
+We hechten veel waarde aan schone, onderhoudbare code en een fijne leeromgeving. We werken in kleine teams – meestal 5 engineers, één product manager en één designer. Code reviews zijn standaard. We erkennen dat legacy code er is – en proberen dit zoveel mogelijk, stap voor stap, te verbeteren.
+
+Wat bieden wij?
+Kom je bij ons werken? Dan zorgen we niet alleen voor een fijne baan, maar ook voor aantrekkelijke arbeidsvoorwaarden. Bekijk hier onze volledige arbeidsvoorwaarden.Naast een goed salaris, een gunstige pensioenregeling en 25 vakantiedagen per jaar kun je in ieder geval rekenen op:
+Arbeidsvoorwaarden
+Maandelijks vakantiegeld zodat je er niet op hoeft te wachten. Veel kortingen bij lokale bedrijven.Friends & Family vouchers.
+Persoonlijke ontwikkeling
+Trainingen, 1-op-1 begeleiding en intervisie. De kans om steeds meer verantwoordelijkheid op je te nemen.
+Cultuur & activiteiten
+Veel (optionele) sociale activiteiten zoals: boardgame/videogame nights, schaken, boulderen & vrijdagmiddagborrels.
+Tools & hybride werken
+Een Macbook Pro om prettig te kunnen werken. Flexibele starttijden (8:00-9:00).Hybride werken: je mag tot aan twee dagen thuiswerken.
+
+Wat we zoeken
+Je hebt misschien nog niet veel werkervaring – dat is helemaal oké. We zoeken iemand die gemotiveerd, nieuwsgierig en leergierig is.
+We vinden het fijn als je:
+●     De basis van HTML, CSS en JavaScript goed begrijpt
+●     Al eens hebt gewerkt met bij voorkeur React (of Vue, maar dat gebruiken we niet)
+●     Energie krijgt van problemen oplossen en het leuk vindt om te leren hoe dingen werken
+●     Je prettig voelt in een team en om hulp durft te vragen
+●     Goed Engels spreekt (Nederlands is handig, maar geen vereiste)

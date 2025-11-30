@@ -42,8 +42,8 @@ token.json
 *_token.json
 
 # --- Email data (contains personal info) ---
-Email/**/*.json
-Email/Processing/
+Email/
+
 
 # --- Generated job lists (can be regenerated) ---
 all_jobs_list.json
