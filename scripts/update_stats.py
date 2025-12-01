@@ -12,6 +12,8 @@ SOLICITATIES_DIR = PROJECT_ROOT / "Solicitaties"
 ARCHIVE_DIR = PROJECT_ROOT / "Solicitaties" / "1.Archief"
 EMAIL_ONGOING_DIR = PROJECT_ROOT / "Email" / "Ongoing"
 EMAIL_ARCHIVE_DIR = PROJECT_ROOT / "Email" / "Archive"
+CONFIG_DIR = PROJECT_ROOT / "config"
+STATS_SCHEMA_PATH = CONFIG_DIR / "stats.schema.json"
 
 # Response priority (lower number = higher priority)
 RESPONSE_HIERARCHY = {

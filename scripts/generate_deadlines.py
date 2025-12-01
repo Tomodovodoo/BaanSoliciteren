@@ -52,7 +52,7 @@ def get_ongoing_deadlines():
 
 def write_deadlines_file(deadlines):
     """Write deadlines to deadlines.txt."""
-    output_path = Path(__file__).parent.parent / "deadlines.txt"
+    output_path = Path(__file__).parent.parent / "data" / "deadlines.txt"
     
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write("ONGOING JOB APPLICATION DEADLINES\n")

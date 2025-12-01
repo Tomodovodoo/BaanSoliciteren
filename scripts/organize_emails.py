@@ -38,18 +38,26 @@ def extract_sender_domain(email_from):
         return email.split('@')[-1].lower()
     return None
 
-def get_active_job_folders():
-    """Get list of active (non-archived) job folders."""
-    active_jobs = []
+def get_all_job_folders():
+    """Get list of all job folders (active and archived)."""
+    all_jobs = []
     
     if not SOLICITATIES_DIR.exists():
-        return active_jobs
+        return all_jobs
     
+    # Active jobs
     for folder in SOLICITATIES_DIR.iterdir():
         if folder.is_dir() and folder.name != "1.Archief":
-            active_jobs.append(folder.name)
+            all_jobs.append(folder.name)
+            
+    # Archived jobs
+    archive_dir = SOLICITATIES_DIR / "1.Archief"
+    if archive_dir.exists():
+        for folder in archive_dir.iterdir():
+            if folder.is_dir():
+                all_jobs.append(folder.name)
     
-    return active_jobs
+    return all_jobs
 
 def is_job_archived(job_folder_name):
     """Check if a job folder exists in the archive."""
@@ -113,10 +121,10 @@ def calculate_match_score(folder_name, sender_email, subject, body):
 
 def get_job_folder(company, subject, email_from, body=""):
     """Determine the correct job folder based on email content."""
-    # Get active job folders
-    active_jobs = get_active_job_folders()
+    # Get all job folders (active and archived)
+    all_jobs = get_all_job_folders()
     
-    if not active_jobs:
+    if not all_jobs:
         return None
     
     # If company is specified, filter to matching companies first
@@ -124,15 +132,15 @@ def get_job_folder(company, subject, email_from, body=""):
         company_lower = company.lower()
         matching_jobs = []
         
-        for folder in active_jobs:
+        for folder in all_jobs:
             _, folder_company = parse_job_folder_name(folder)
             if folder_company and company_lower in folder_company:
                 matching_jobs.append(folder)
         
-        # If we have company matches, use those; otherwise use all active jobs
-        candidate_jobs = matching_jobs if matching_jobs else active_jobs
+        # If we have company matches, use those; otherwise use all jobs
+        candidate_jobs = matching_jobs if matching_jobs else all_jobs
     else:
-        candidate_jobs = active_jobs
+        candidate_jobs = all_jobs
     
     # Score each candidate job
     best_match = None

@@ -8,11 +8,16 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 
 SCRIPT_DIR = Path(__file__).parent
-CREDENTIALS_PATH = SCRIPT_DIR / "credentials.json"
+BASE_DIR = SCRIPT_DIR.parent
+DATA_DIR = BASE_DIR / "data"
+CONFIG_DIR = BASE_DIR / "config"
+EMAIL_DIR = BASE_DIR / "Email"
+PROCESSING_DIR = EMAIL_DIR / "Processing"
+LOG_FILE = DATA_DIR / "fetch_log.txt"
+CONFIG_FILE = CONFIG_DIR / "fetch_emails_config.json"
+CREDENTIALS_PATH = BASE_DIR / "credentials.json"
 TOKEN_PATH = Path.home() / ".gmail-mcp" / "token.json"
-OUTPUT_DIR = SCRIPT_DIR.parent / "Email" / "Processing"
-CONFIG_PATH = SCRIPT_DIR / "config" / "fetch_emails_config.json"
-UNRELATED_SENDERS_FILE = SCRIPT_DIR.parent / "Email" / "Processing" / "unrelated_email_senders.json"
+UNRELATED_SENDERS_FILE = PROCESSING_DIR / "unrelated_email_senders.json"
 
 # Job-related keywords for safety check
 JOB_KEYWORDS = [
