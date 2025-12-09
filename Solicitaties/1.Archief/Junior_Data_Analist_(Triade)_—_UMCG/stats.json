@@ -1,8 +1,8 @@
 {
   "PotentialSatisfaction": 9.2,
   "NextAction": "Apply immediately via UMCG portal, specifically mentioning thesis on GNNs",
-  "Response": "Unsent",
+  "Response": "Rejected",
   "Interviewed": false,
   "Hired": false,
-  "Rejected": false
+  "Rejected": true
 }

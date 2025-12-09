@@ -28,22 +28,22 @@ JOB_KEYWORDS = [
 
 def load_config():
     """Load configuration from config file."""
-    if not CONFIG_PATH.exists():
+    if not CONFIG_FILE.exists():
         default_config = {
             "cutoff_date": "2025/11/19",
             "last_run": None
         }
-        CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+        CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
             json.dump(default_config, f, indent=2)
         return default_config
     
-    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def save_config(config):
     """Save configuration to config file."""
-    with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
         json.dump(config, f, indent=2)
 
 def get_query():
@@ -56,17 +56,63 @@ def get_query():
     cutoff_date = config.get('cutoff_date', '2025/11/19')
     return f"after:{cutoff_date}"
 
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.auth.exceptions import RefreshError
+
+# Scopes required for the script
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+
 def load_credentials():
-    """Load Gmail API credentials."""
-    if TOKEN_PATH.exists():
-        with open(TOKEN_PATH, 'r') as f:
-            token_data = json.load(f)
-        creds = Credentials.from_authorized_user_info(token_data)
-        return creds
+    """Load Gmail API credentials with auto-refresh and error handling."""
+    creds = None
     
-    from gmail_mcp.utils.GCP.gmail_auth import get_gmail_service
-    os.environ['GMAIL_CREDENTIALS_PATH'] = str(CREDENTIALS_PATH)
-    return get_gmail_service()
+    if TOKEN_PATH.exists():
+        try:
+            with open(TOKEN_PATH, 'r') as f:
+                token_data = json.load(f)
+            creds = Credentials.from_authorized_user_info(token_data)
+        except Exception:
+            print("  Corrupt token file found. Deleting...")
+            TOKEN_PATH.unlink()
+            creds = None
+
+    # If valid credentials (with refresh token) are present, verify validity
+    if creds:
+        if creds.expired and creds.refresh_token:
+            try:
+                print("  Refreshing expired access token...")
+                creds.refresh(Request())
+                # Save refreshed token
+                with open(TOKEN_PATH, 'w') as f:
+                    f.write(creds.to_json())
+            except (RefreshError, Exception) as e:
+                print(f"  Token refresh failed: {e}")
+                print("  Deleting invalid token file to force re-authentication.")
+                if TOKEN_PATH.exists():
+                    TOKEN_PATH.unlink()
+                creds = None
+    
+    # If no valid creds, trigger new auth flow
+    if not creds:
+        print("  Initiating new authentication flow...")
+        if not CREDENTIALS_PATH.exists():
+            raise FileNotFoundError(f"Credentials file not found at: {CREDENTIALS_PATH}")
+            
+        try:
+            flow = InstalledAppFlow.from_client_secrets_file(str(CREDENTIALS_PATH), SCOPES)
+            creds = flow.run_local_server(port=0)
+            
+            # Save the credentials for the next run
+            TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(TOKEN_PATH, 'w') as f:
+                f.write(creds.to_json())
+                
+        except Exception as e:
+            print(f"  Authentication failed: {e}")
+            raise
+        
+    return creds
 
 def decode_body(payload):
     """Extract and decode email body from payload."""
@@ -188,13 +234,13 @@ def fetch_emails():
     if spam_list:
         print(f"  Loaded spam filter with {len(spam_list)} blocked senders\n")
     
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    PROCESSING_DIR.mkdir(parents=True, exist_ok=True)
     
     processed, skipped, filtered_spam = 0, 0, 0
     
     for msg in all_messages:
         email_id = msg['id']
-        output_file = OUTPUT_DIR / f"{email_id}.json"
+        output_file = PROCESSING_DIR / f"{email_id}.json"
         
         if output_file.exists():
             skipped += 1
@@ -242,7 +288,7 @@ def fetch_emails():
     print(f"\n✓ Complete! Processed: {processed}, Skipped: {skipped}")
     if filtered_spam > 0:
         print(f"✓ Filtered spam: {filtered_spam} emails")
-    print(f"  Output: {OUTPUT_DIR.absolute()}")
+    print(f"  Output: {PROCESSING_DIR.absolute()}")
     
     config = load_config()
     config['cutoff_date'] = runtime_date_str

@@ -1,8 +1,8 @@
 {
   "PotentialSatisfaction": 8.5,
   "NextAction": "Interview scheduled Dec 2, 2025 at 12:50 - UMCG Kamer Y1.147",
-  "Response": "Interview Scheduled",
+  "Response": "Rejected",
   "Interviewed": true,
   "Hired": false,
-  "Rejected": false
+  "Rejected": true
 }

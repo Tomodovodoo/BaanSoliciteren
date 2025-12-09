@@ -7,7 +7,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent if (SCRIPT_DIR.parent / "Solicitaties").exists() else SCRIPT_DIR
 
 SOLICITATIES_DIR = PROJECT_ROOT / "Solicitaties"
-ARCHIVE_DIR = SOLICITATIES_DIR / "Archief"
+ARCHIVE_DIR = SOLICITATIES_DIR / "1.Archief"
 ARCHIVE_STATES = {"Rejected", "Expired"}
 
 def archive_jobs():
