@@ -1,0 +1,12 @@
+Geachte heer Van Keulen,
+Software testen is voor mij precies het leukste deel van bouwen: kritisch kijken, slim puzzelen en doorzetten tot je zeker weet dat iets écht klopt. Daarom solliciteer ik graag naar de functie Tester bij CGI in Groningen.
+Ik ken de frustraties als eindgebruiker al te goed, naast de belangrijke rol van het voorkomen van kwetsbare code. De combinatie van maatschappelijke impact en de ruimte om door te groeien maakt deze functie erg aantrekkelijk voor mij. Graag wil ik bij CGI hierin mijn impact tonen.
+Vanuit mijn bachelor Scheikunde neem ik een sterke basis mee in gestructureerd werken en kwaliteitsdenken. In mijn bachelorscriptie (graph neural networks voor NMR-voorspelling) was valideren geen bijzaak. Voor een overgroot deel bouwde ik reproduceerbare pipelines, statistische modellen voor controleerde data- en modelresultaten en documenteerde keuzes zodat alles controleerbaar en herhaalbaar bleef.
+Mijn praktische testervaring heb ik parttime opgedaan bij Teamspot, waar ik in een Agile-omgeving verantwoordelijk was voor bugtesten en het helder communiceren van bevindingen naar developers. Daarbij heb ik ook geholpen met het signaleren en oplossen van frontendkwetsbaarheden (o.a. XSS-gerelateerde session escalation) en heb ik ervaring opgedaan met het uitvoeren van backendtests. Daarnaast heb ik bij Odido (via Transcom) ervaren hoe cruciaal goed werkende software is voor de eindgebruiker. Ik ben communicatief sterk in zowel Nederlands als Engels en schakel makkelijk tussen technische details en de impact voor de organisatie, iets wat in een testrol, als schakel tussen techniek en klantwensen, essentieel is.
+Wat mij specifiek aantrekt in CGI is de focus op ontwikkeling en eigenaarschap. Ik ben van nature leergierig, werk graag met tooling zoals Selenium, en ik heb een erg stevige programmeerbasis in Python en ervaring met Git. Na mijn studie heb ik deze basis uitgebreid tot competitief programmeren en code snelheid. Certificeringen zoals ISTQB/TMap/PSM1 haal ik graag wanneer dit waarde toevoegt binnen CGI of bij een klant.
+Ik woon in Grijpskerk en ben beschikbaar voor 32-40 uur. Ik licht mijn motivatie en vaardigheden graag toe in een gesprek. In de tussentijd nodig ik u van harte uit om mijn Github te bekijken voor mijn publieke projecten.
+Met vriendelijke groet,
+Tom de Groot
+06 31490416
+tomthegreatest04@gmail.com
+GitHub: https://github.com/Tomodovodoo

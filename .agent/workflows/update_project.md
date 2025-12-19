@@ -44,6 +44,14 @@ Follow these steps to update the project with new emails and status changes.
     ```
 
 6.  **Manual Follow-up**
+
     - Check the `Email/Ongoing` folder for new emails.
     - For each new email, update the `Notes` field in the corresponding `relevant_info.json` file.
     - Update the `NextAction` field in `stats.json` if necessary.
+
+7.  **Update Cover Letter Database**
+    Run the script to extract cover letters from rejected jobs and update the knowledge base.
+    // turbo
+    ```bash
+    python scripts/extract_previous_letters.py
+    ```

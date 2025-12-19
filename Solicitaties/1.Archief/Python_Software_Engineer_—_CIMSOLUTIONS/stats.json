@@ -1,7 +1,7 @@
 {
   "PotentialSatisfaction": 5.9,
   "NextAction": "Check rijbewijs-eis; eventueel later proberen.",
-  "Response": "Unsent",
+  "Response": "Expired",
   "Interviewed": false,
   "Hired": false,
   "Rejected": false

@@ -1,8 +1,8 @@
 {
   "PotentialSatisfaction": 6.9,
   "NextAction": "Apply via direct link before Nov 30",
-  "Response": "Received",
+  "Response": "Rejected",
   "Interviewed": false,
   "Hired": false,
-  "Rejected": false
+  "Rejected": true
 }
