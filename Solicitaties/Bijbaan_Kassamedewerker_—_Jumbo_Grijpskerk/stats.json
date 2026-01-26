@@ -1,0 +1,8 @@
+{
+  "PotentialSatisfaction": 5.0,
+  "NextAction": "Check application status",
+  "Response": "Pending",
+  "Interviewed": false,
+  "Hired": false,
+  "Rejected": false
+}
