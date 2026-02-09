@@ -290,9 +290,11 @@ def generate_cv():
 
                 <div>
                     <div class="section-title">Awards</div>
+                    <div class="job-item" style="border:none; padding:0; margin-bottom: 5px;">
+                        <div class="item-title" style="font-size: 11.5px; font-weight: 400;"><a href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" style="color: #2563eb; text-decoration: none;">Chess.com Member of the Year 2021</a></div>
+                    </div>
                     <div class="job-item" style="border:none; padding:0; margin-bottom: 10px;">
-                        <div class="item-title" style="font-size: 11.5px;">Top Performer</div>
-                        <div class="item-desc" style="font-size: 11px;">Odido (Customer Satisfaction)</div>
+                        <div class="item-title" style="font-size: 11.5px; font-weight: 400;"><a href="https://harmonic.fun/news#blog-post-mathematician-sponsorships" style="color: #2563eb; text-decoration: none;">Harmonic Rising Mathematician (confidential)</a></div>
                     </div>
                 </div>
             </div>
