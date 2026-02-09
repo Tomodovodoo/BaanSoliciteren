@@ -35,7 +35,8 @@ while ($true) {
                             Write-Host "Generated Message: $commitMessage"
                         }
                         else {
-                            Write-Host "Could not find COMMIT_MSG marker. Full output was:"
+                            Write-Host "Could not find COMMIT_MSG m
+                             ker. Full output was:"
                             Write-Host $geminiMsg
                             Write-Host "Using default message."
                         }

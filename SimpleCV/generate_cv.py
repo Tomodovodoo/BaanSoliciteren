@@ -41,10 +41,10 @@ def generate_cv():
     .sidebar {
         background-color: #f8fafc;
         color: #334155;
-        padding: 30px 25px; /* Restored padding */
+        padding: 15px 25px; /* Reduced padding to shift up */
         display: flex;
         flex-direction: column;
-        gap: 22px; /* Increased gap to fill vertical space */
+        gap: 12px; /* Reduced gap */
         border-right: 1px solid #e2e8f0;
     }
 
@@ -256,7 +256,7 @@ def generate_cv():
                 
                 <div class="contact-section">
                     <h1>Tom de Groot</h1>
-                    <span class="subtitle">Chemistry - Mathematics <br> Programming - Data</span>
+                    <span class="subtitle">Chemistry - Mathematics <br> Programming - AI</span>
                     
                     <div class="contact-details">
                         <p><strong>Born:</strong> 30-03-2004</p>
@@ -285,6 +285,14 @@ def generate_cv():
                         <div class="item-desc">University of Groningen</div>
                         <div class="item-desc" style="font-size: 11px; color:#64748b;">Sep 2021 - Aug 2025</div>
                         <div class="item-desc" style="font-style: italic; font-size: 11px;">Track: Chemistry of Life</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">Awards</div>
+                    <div class="job-item" style="border:none; padding:0; margin-bottom: 10px;">
+                        <div class="item-title" style="font-size: 11.5px;">Top Performer</div>
+                        <div class="item-desc" style="font-size: 11px;">Odido (Customer Satisfaction)</div>
                     </div>
                 </div>
             </div>
