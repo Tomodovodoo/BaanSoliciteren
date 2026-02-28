@@ -23,36 +23,35 @@ def generate_cv():
         padding: 0;
         background-color: #fff;
         color: #334155;
-        font-size: 12.8px; /* Balanced size */
-        line-height: 1.45;
+        font-size: 12.8px;
+        line-height: 1.42;
         width: 210mm;
-        height: 297mm;
-        overflow: hidden; /* Ensure single page */
+        height: 296mm;
+        overflow: hidden;
     }
-
-    /* Layout: Sidebar (Left) + Main (Right) */
+    
     .page-container {
         display: grid;
-        grid-template-columns: 75mm 1fr;
-        height: 100%;
+        grid-template-columns: 70mm 1fr;
+        height: 296mm;
+        width: 210mm;
     }
 
-    /* Sidebar Styling */
     .sidebar {
         background-color: #f8fafc;
         color: #334155;
-        padding: 15px 25px; /* Reduced padding to shift up */
+        padding: 12px 14px;
         display: flex;
         flex-direction: column;
-        gap: 12px; /* Reduced gap */
+        gap: 12px;
         border-right: 1px solid #e2e8f0;
     }
 
     .profile-pic-container {
-        width: 125px;
-        height: 125px;
+        width: 90px;
+        height: 90px;
         border-radius: 50%;
-        border: 4px solid #fff;
+        border: 3px solid #fff;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         margin: 0 auto;
@@ -65,29 +64,30 @@ def generate_cv():
     }
 
     .contact-section h1 {
-        font-size: 23px;
+        font-size: 24px;
         font-weight: 800;
         color: #1e293b;
-        margin: 0 0 5px 0;
+        margin: 0 0 6px 0;
         text-align: center;
         letter-spacing: -0.5px;
-        line-height: 1.2;
+        line-height: 1.1;
     }
 
     .subtitle {
         text-align: center;
         color: #2563eb;
         font-weight: 600;
-        margin-bottom: 15px;
+        margin-bottom: 8px;
         display: block;
-        font-size: 13.5px;
+        font-size: 13px;
+        line-height: 1.25;
     }
 
     .contact-details {
         display: flex;
         flex-direction: column;
-        gap: 7px;
-        font-size: 11.5px;
+        gap: 6px;
+        font-size: 11px;
     }
 
     .contact-details p { margin: 0; display: flex; align-items: center; gap: 8px; }
@@ -101,91 +101,51 @@ def generate_cv():
     .section-title {
         font-size: 12.5px;
         text-transform: uppercase;
-        letter-spacing: 1.1px;
+        letter-spacing: 1px;
         color: #64748b;
         font-weight: 700;
         border-bottom: 2px solid #cbd5e1;
-        padding-bottom: 5px;
-        margin-bottom: 10px;
+        padding-bottom: 4px;
+        margin-bottom: 8px;
     }
 
-    /* Thesis Image Styling */
-    .thesis-sidebar-container {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #fff;
-        padding: 9px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    }
-    
-    .thesis-sidebar-container img {
-        width: 100%;
-        height: auto;
-        display: block;
-        border: 1px solid #cbd5e1;
-        margin-bottom: 6px;
-    }
-    
-    .thesis-header {
-        font-size: 12px;
-        font-weight: 700;
-        color: #2563eb;
-        text-align: center;
-        margin-bottom: 6px;
-        line-height: 1.3;
-    }
-
-    .thesis-caption {
-        font-size: 10px;
-        color: #64748b;
-        text-align: center;
-        font-style: italic;
-        line-height: 1.3;
-    }
-
-    /* Main Content Styling */
     .main-content {
-        padding: 30px 35px; /* Increased vertical padding */
+        padding: 28px 28px 8px 28px;
         display: flex;
         flex-direction: column;
-        gap: 18px; /* Balanced gap */
+        gap: 4px;
     }
 
     .main-section {
-        margin-bottom: 5px;
+        margin-bottom: 6px;
     }
     
     .main-title {
         font-size: 15.5px;
         font-weight: 700;
         color: #1e293b;
-        margin-bottom: 8px;
+        margin-bottom: 3px;
         display: flex;
         align-items: center;
         gap: 8px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 5px;
+        padding-bottom: 2px;
     }
 
     .about-text {
         text-align: left;
-        margin-bottom: 10px;
+        margin-bottom: 2px;
         color: #334155;
         text-align: justify;
-    }
-
-    .project-item, .job-item {
-        margin-bottom: 13px; /* Slightly increased */
     }
 
     .item-header {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        margin-bottom: 3px;
+        margin-bottom: 1px;
     }
 
     .item-title {
@@ -196,42 +156,38 @@ def generate_cv():
 
     .item-date {
         color: #64748b;
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 500;
         white-space: nowrap; 
         background: #f1f5f9;
-        padding: 2px 7px;
+        padding: 1.5px 6px;
         border-radius: 4px;
     }
 
     .item-desc {
         color: #475569;
-        font-size: 12.5px; /* Restored size */
-        margin: 0;
+        font-size: 12.2px;
+        margin: 0 0 1px 0;
+        line-height: 1.45;
     }
     
-    a.link-style {
+    .link-style {
         color: #2563eb;
         text-decoration: none;
+        font-weight: 500;
     }
 
-    /* Skills Grid */
-    .skills-ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
     .skills-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px 14px;
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
-    .skills-ul li {
-        font-size: 12.5px;
+    .skill-category {
+        font-size: 11.5px;
+        line-height: 1.3;
     }
-    .skills-ul strong { color: #0f172a; font-weight: 600; }
+    .skill-category strong { color: #0f172a; font-weight: 600; }
 
-    /* Print Specifics */
     @media print {
         @page { margin: 0; }
         body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -256,12 +212,10 @@ def generate_cv():
                 
                 <div class="contact-section">
                     <h1>Tom de Groot</h1>
-                    <span class="subtitle">Chemistry - Mathematics <br> Programming - AI</span>
+                    <span class="subtitle">Frontier Evaluation &<br>Formal Verification</span>
                     
                     <div class="contact-details">
-                        <p><strong>Born:</strong> 30-03-2004</p>
                         <p>Grijpskerk, NL</p>
-                        <p>Herestraat 45, 9843 AJ</p>
                         <p><a href="tel:+31631490416">+31 6 314 90 416</a></p>
                         <p><a href="mailto:tomthegreatest04@gmail.com">tomthegreatest04@gmail.com</a></p>
                         <p><a href="https://github.com/Tomodovodoo">github.com/Tomodovodoo</a></p>
@@ -269,32 +223,38 @@ def generate_cv():
                     </div>
                 </div>
 
-                <!-- THESIS IMAGE IN SIDEBAR (High Up) -->
-                <div class="thesis-sidebar-container">
-                     <div class="thesis-header">Research Showcase</div>
-                    <img src="Thesis_page.png" alt="Thesis Excerpt">
-                    <div class="thesis-caption">
-                         <strong>Bachelor Thesis:</strong> Evaluating and Optimizing NMR Prediction with GNNs (Pollice Research Group).
+                <div>
+                    <div class="section-title">Technical Stack</div>
+                    <div class="skills-grid">
+                        <div class="skill-category"><strong>ML/Agents:</strong> TensorFlow, n8n, OpenClaw, Slurm</div>
+                        <div class="skill-category"><strong>Formal:</strong> Lean 4, mathlib, Lake, CI/CD for proofs, auto-formalization.</div>
+                        <div class="skill-category"><strong>Tools:</strong> Git, GitHub, Linux/HPC, VS Code, Docker, Numba/Njit</div>
+                        <div class="skill-category"><strong>Software Languages:</strong> Python, Lean.</div>
+                        <div class="skill-category"><strong>Spoken Languages:</strong> Dutch, English.</div>
                     </div>
                 </div>
 
                 <div>
                     <div class="section-title">Education</div>
-                    <div class="job-item" style="border:none; padding:0; margin-bottom: 10px;">
+                    <div class="job-item" style="margin-bottom: 8px;">
                         <div class="item-title">BSc Chemistry</div>
-                        <div class="item-desc">University of Groningen</div>
-                        <div class="item-desc" style="font-size: 11px; color:#64748b;">Sep 2021 - Aug 2025</div>
-                        <div class="item-desc" style="font-style: italic; font-size: 11px;">Track: Chemistry of Life</div>
+                        <div class="item-desc" style="margin-bottom:0;">University of Groningen</div>
+                        <div class="item-desc" style="font-size: 10.5px; color:#64748b; margin-bottom:0;">2021 - 2025</div>
+                        <div class="item-desc" style="font-style: italic; font-size: 10.5px; margin-bottom: 2px;">Track: Chemistry of Life</div>
+                        <div class="item-desc" style="font-size: 10px; line-height: 1.2; color:#334155;">
+                            <strong>Thesis:</strong> Evaluating and Optimizing NMR Prediction with Graph Neural Networks<br>(Chem-AI)
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <div class="section-title">Awards</div>
-                    <div class="job-item" style="border:none; padding:0; margin-bottom: 5px;">
-                        <div class="item-title" style="font-size: 11.5px; font-weight: 400;"><a href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" style="color: #2563eb; text-decoration: none;">Chess.com Member of the Year 2021</a></div>
+                    <div class="job-item" style="margin-bottom: 5px;">
+                        <div class="item-title" style="font-size: 11px;"><a href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" class="link-style">Chess.com Member of the Year 2021</a></div>
                     </div>
-                    <div class="job-item" style="border:none; padding:0; margin-bottom: 10px;">
-                        <div class="item-title" style="font-size: 11.5px; font-weight: 400;"><a href="https://harmonic.fun/news#blog-post-mathematician-sponsorships" style="color: #2563eb; text-decoration: none;">Harmonic Rising Mathematician (confidential)</a></div>
+                    <div class="job-item">
+                        <div class="item-title" style="font-size: 11px;"><a href="https://harmonic.fun/news#blog-post-mathematician-sponsorships" class="link-style">Harmonic Rising Mathematician Grant</a></div>
+                        <div class="item-desc" style="font-size: 10px;">(Details on request)</div>
                     </div>
                 </div>
             </div>
@@ -304,88 +264,98 @@ def generate_cv():
                 <div class="main-section">
                     <div class="main-title">About Me</div>
                     <div class="about-text">
-                        Hi, I’m Tom! I graduated from the University of Groningen with a BSc in Chemistry. 
-                        During this, I chose the Life Sciences track. I wrote my thesis in the Pollice Group, evaluating and optimizing NMR prediction with Graph Neural Networks.
+                        Hi, I'm Tom. I'm a BSc Chemistry graduate from the University of Groningen (Life Sciences track). 
+                        My thesis in the Pollice Group focused on optimizing NMR prediction with GNNs. 
+                        Post-graduation, I pivoted to mathematics and formal methods, becoming an active contributor to the <strong>PNT+</strong> Lean formalization project. 
+                        I've built a strong foundation in student mathematics and programming, which I use to design and evaluate AI systems, their output, and create frameworks for them.
                     </div>
-                    <div class="about-text">
-                        After graduation, I got more into math and programming. I wrote a program to automatically search jobs agentically, to no avail yet.
-                        So, during my free time, I started to work on Project Euler (complex math challenges), which eventually led me to <strong>PNT+</strong>, an effort to create a human-readable proof of the Prime Number Theorem in Lean.
-                    </div>
-                    <div class="about-text">
-                         Since my time at uni, I’ve developed myself to be a competent student mathematician and programmer.
-                         So, without working experience in the field, I’m trying to make do with contributing to Open Source, and perform my hobbies in math, AI, and in the sciences.
+                    <div class="about-text" style="margin-top: 4px;">
+                        <strong>Goals!</strong> Focusing on frontier model capability work, stress-testing, and evaluation design. 
+                        My current goal is to use agentic systems and formal verification (Lean 4) to contribute to open science in mathematics.
                     </div>
                 </div>
 
                 <div class="main-section">
-                    <div class="main-title">Skills</div>
-                    <ul class="skills-ul skills-grid">
-                        <li><strong>Math:</strong> Lean (Beginner), Formal Verification</li>
-                        <li><strong>Code:</strong> Python (Medior), AI/ML (Medior)</li>
-                        <li><strong>Science:</strong> Analytical (Bio)Chemistry</li>
-                        <li><strong>Tools:</strong> Git, GitHub, VS Code, LaTeX</li>
-                        <li><strong>Native:</strong> Dutch</li>
-                        <li><strong>Fluent:</strong> English</li>
-                    </ul>
-                </div>
-
-                <div class="main-section">
-                    <div class="main-title">Featured Projects</div>
+                    <div class="main-title">Selected Research & Formalization</div>
+                    
                     <div class="project-item">
                         <div class="item-header">
-                            <span class="item-title">PNT+ (Formal Verification)</span>
+                            <span class="item-title">Prime Number Theorem And (PNT+)</span>
+                            <span class="item-date">Late 2025 - Present</span>
                         </div>
+                        <p class="item-desc" style="margin-bottom: 3px;">
+                            Active contributor to the Lean 4 formalization project led by Alex Kontorovich and Terence Tao. 
+                            Using an AI system called Aristotle, I have formalized multiple intermediate theorems, and I am a recent maintainer of the Aristotle branch alongside Pietro Monticone.
+                        </p>
                         <p class="item-desc">
-                            Formalizing complex number theory in Lean. Solving impactful theorems and lemmas.
-                            <a href="https://github.com/AlexKontorovich/PrimeNumberTheoremAnd/issues?q=author%3Atomodovodoo%20OR%20reviewed-by%3Atomodovodoo" class="link-style">View Contributions</a>
+                            My current focus herein is the scaling up of Aristotle and other agentic systems to formalize more mathematics.
+                            <a href="https://github.com/AlexKontorovich/PrimeNumberTheoremAnd/pulls?q=is%3Apr+author%3ATomodovodoo" class="link-style">Merged PRs</a>
                         </p>
                     </div>
 
                     <div class="project-item">
                         <div class="item-header">
-                            <span class="item-title">Automated Job Search Agent</span>
+                            <span class="item-title">First Proof Problem 9 (Lean-verified Solution)</span>
+                            <span class="item-date">Feb 2026</span>
                         </div>
+                        <p class="item-desc" style="margin-bottom: 3px;">
+                            Produced the only credible formalized solution during the 7 day challenge, recognized by among others <strong>Kevin Buzzard</strong> and <strong>Daniel Litt</strong>, who gave it the context of "gold standard of LLM-aided mathematics." 
+                            Created an autonomous agent that worked on the informal proof, and orchestrated multiple LLM agents to formalize it in Lean 4.
+                            <a href="https://github.com/Tomodovodoo/firstproof" class="link-style">View Repository</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="main-section">
+                    <div class="main-title">Engineering Projects</div>
+                    <div class="project-item">
+                        <div class="item-header">
+                            <span class="item-title">BaanSolliciteren (Agentic Job Automation)</span>
+                        </div>
+                        <p class="item-desc" style="margin-bottom: 4px;">
+                            Engineered a semi-agentic system to automate my job search and its documentation. Built a custom <strong>Gmail MCP server</strong> (Model Context Protocol) to enable real-time status tracking and ranking of vacancies.
+                        </p>
                         <p class="item-desc">
-                            Developed a Python-based agentic tool to automate and optimize job searching workflows.
+                            Implemented HTML-to-JSON schema parsing and automated LLM-based fit-scoring. Developed logic to cross-reference vacancy descriptions against personal descriptors, significantly reducing manual review time.
                         </p>
                     </div>
                     
                      <div class="project-item">
                         <div class="item-header">
-                            <span class="item-title">Collection of Projects</span>
+                            <span class="item-title">Technical Collection & Visualizations</span>
                         </div>
                         <p class="item-desc">
-                           From Audio to Text from scratch, plotting immigration, vaccine, and water data, to manipulating single player savegame data, these are my University hobby projects.
-                           <a href="https://github.com/Tomodovodoo/Collection-of-Projects" class="link-style">View on Github</a>
+                           Multi-year repository of technical interests and explorations: including from-scratch audio-to-text implementations and interactive visualizations of high-dimensional datasets (e.g., vaccine distribution and water quality metrics). Focused on extracting insights from real-world data.
+                           <a href="https://github.com/Tomodovodoo/Collection-of-Projects" class="link-style">GitHub</a>
                         </p>
                     </div>
                 </div>
 
                 <div class="main-section">
-                    <div class="main-title">Work & Community Experience</div>
+                    <div class="main-title">Professional Experience</div>
                     
                     <div class="job-item">
                         <div class="item-header">
                             <span class="item-title">Transcom (for Odido)</span>
-                            <span class="item-date">May 2024 - Nov 2024</span>
+                            <span class="item-date">2024</span>
                         </div>
-                        <p class="item-desc">Customer Service Representative. Consistent top performer in customer satisfaction.</p>
+                        <p class="item-desc">Demonstrated reliable performance in customer service, maintaining consistent top-tier customer satisfaction ratings and learning to explain at every level.</p>
                     </div>
 
                     <div class="job-item">
                         <div class="item-header">
-                            <span class="item-title">Teamspot</span>
-                            <span class="item-date">Feb 2022 - July 2024</span>
+                            <span class="item-title">Teamspot (Regional Director)</span>
+                            <span class="item-date">2022 - 2024</span>
                         </div>
-                        <p class="item-desc">Regional Director (Northern Netherlands). Coordinated school projects and performed testing/data entry.</p>
+                        <p class="item-desc">Coordinated regional school projects and taught teachers, performed technical testing/data entry within an Agile/Jira environment, alongside in-depth bug testing and general responsibilities.</p>
                     </div>
 
                     <div class="job-item">
                         <div class="item-header">
                             <span class="item-title">Chess.com</span>
-                            <span class="item-date">Jan 2022 - June 2022</span>
+                            <span class="item-date">2022</span>
                         </div>
-                        <p class="item-desc">Event Proctor & Moderator. Assisted in moderation of international online chess events and the "Leagues" project.</p>
+                        <p class="item-desc">Moderated and proctored international chess events; recognized as <strong>Member of the Year 2021</strong> for community ownership and chess coaching.</p>
                     </div>
                 </div>
             </div>
