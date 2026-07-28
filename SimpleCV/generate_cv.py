@@ -1,429 +1,948 @@
-import markdown
-import os
-import subprocess
-import shutil
-from pypdf import PdfReader, PdfWriter
+"""Generate Tom de Groot's one-page research CV as PDF and PNG.
 
-def generate_cv():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    md_file = os.path.join(base_dir, 'CV.md')
-    html_file = os.path.join(base_dir, 'CV.html')
-    pdf_file = os.path.join(base_dir, 'CV.pdf')
-    png_file = os.path.join(base_dir, 'CV.png')
+The document is rendered directly with ReportLab. No HTML or Markdown
+source/intermediate files are created.
 
-    # Modern CSS with Grid - Clean & Professional
-    css = """
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    * { box-sizing: border-box; }
+Run from any directory with:
 
-    body {
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-        color: #334155;
-        font-size: 12.8px;
-        line-height: 1.42;
-        width: 210mm;
-        height: 296mm;
-        overflow: hidden;
+    python SimpleCV/generate_cv.py
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import fitz
+from pypdf import PdfReader
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Paragraph
+
+
+BASE_DIR = Path(__file__).resolve().parent
+PDF_PATH = BASE_DIR / "CV.pdf"
+PNG_PATH = BASE_DIR / "CV.png"
+PROFILE_PATH = BASE_DIR / "Profile_pic.jpg"
+
+PAGE_WIDTH, PAGE_HEIGHT = A4
+MARGIN = 12 * mm
+HEADER_HEIGHT = 56 * mm
+BODY_TOP = PAGE_HEIGHT - HEADER_HEIGHT - 8 * mm
+BODY_BOTTOM = 11 * mm
+COLUMN_GAP = 8 * mm
+RAIL_WIDTH = 54 * mm
+MAIN_WIDTH = PAGE_WIDTH - 2 * MARGIN - COLUMN_GAP - RAIL_WIDTH
+MAIN_X = MARGIN
+RAIL_X = MAIN_X + MAIN_WIDTH + COLUMN_GAP
+
+NAVY = colors.HexColor("#0B1F3A")
+NAVY_2 = colors.HexColor("#153252")
+BLUE = colors.HexColor("#2D63FF")
+BLUE_DARK = colors.HexColor("#1746C7")
+BLUE_PALE = colors.HexColor("#EAF1FF")
+PAGE_BG = colors.HexColor("#F6F8FC")
+CARD_BG = colors.white
+TEXT = colors.HexColor("#2E3B50")
+MUTED = colors.HexColor("#66758C")
+RULE = colors.HexColor("#D8E0EC")
+SOFT = colors.HexColor("#EEF2F7")
+WHITE = colors.white
+
+
+def _styles() -> dict[str, ParagraphStyle]:
+    return {
+        "name": ParagraphStyle(
+            "Name",
+            fontName="Helvetica-Bold",
+            fontSize=25,
+            leading=28,
+            textColor=WHITE,
+            alignment=TA_LEFT,
+        ),
+        "header_title": ParagraphStyle(
+            "HeaderTitle",
+            fontName="Helvetica-Bold",
+            fontSize=11.5,
+            leading=13,
+            textColor=colors.HexColor("#78A5FF"),
+            alignment=TA_LEFT,
+        ),
+        "header_focus": ParagraphStyle(
+            "HeaderFocus",
+            fontName="Helvetica",
+            fontSize=8.8,
+            leading=10.5,
+            textColor=colors.HexColor("#D5E0F0"),
+            alignment=TA_LEFT,
+        ),
+        "header_contact": ParagraphStyle(
+            "HeaderContact",
+            fontName="Helvetica",
+            fontSize=7.8,
+            leading=10,
+            textColor=colors.HexColor("#D5E0F0"),
+            alignment=TA_LEFT,
+        ),
+        "quote_label": ParagraphStyle(
+            "QuoteLabel",
+            fontName="Helvetica-Bold",
+            fontSize=7.2,
+            leading=8.5,
+            textColor=colors.HexColor("#78A5FF"),
+            alignment=TA_LEFT,
+        ),
+        "quote": ParagraphStyle(
+            "Quote",
+            fontName="Helvetica-Bold",
+            fontSize=11.1,
+            leading=14,
+            textColor=WHITE,
+            alignment=TA_LEFT,
+        ),
+        "quote_source": ParagraphStyle(
+            "QuoteSource",
+            fontName="Helvetica",
+            fontSize=7.7,
+            leading=9.5,
+            textColor=colors.HexColor("#C7D4E6"),
+            alignment=TA_LEFT,
+        ),
+        "section": ParagraphStyle(
+            "Section",
+            fontName="Helvetica-Bold",
+            fontSize=10.2,
+            leading=12,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "rail_section": ParagraphStyle(
+            "RailSection",
+            fontName="Helvetica-Bold",
+            fontSize=8.7,
+            leading=10,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "card_tag": ParagraphStyle(
+            "CardTag",
+            fontName="Helvetica-Bold",
+            fontSize=6.8,
+            leading=8,
+            textColor=BLUE_DARK,
+            alignment=TA_LEFT,
+        ),
+        "card_title": ParagraphStyle(
+            "CardTitle",
+            fontName="Helvetica-Bold",
+            fontSize=10.7,
+            leading=12.5,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "card_body": ParagraphStyle(
+            "CardBody",
+            fontName="Helvetica",
+            fontSize=8.9,
+            leading=11.7,
+            textColor=TEXT,
+            alignment=TA_LEFT,
+        ),
+        "metric_value": ParagraphStyle(
+            "MetricValue",
+            fontName="Helvetica-Bold",
+            fontSize=14.5,
+            leading=16,
+            textColor=BLUE_DARK,
+            alignment=TA_LEFT,
+        ),
+        "metric_label": ParagraphStyle(
+            "MetricLabel",
+            fontName="Helvetica",
+            fontSize=7.6,
+            leading=9.3,
+            textColor=TEXT,
+            alignment=TA_LEFT,
+        ),
+        "rail_title": ParagraphStyle(
+            "RailTitle",
+            fontName="Helvetica-Bold",
+            fontSize=9,
+            leading=10.7,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "rail_body": ParagraphStyle(
+            "RailBody",
+            fontName="Helvetica",
+            fontSize=7.8,
+            leading=9.7,
+            textColor=TEXT,
+            alignment=TA_LEFT,
+        ),
+        "rail_small": ParagraphStyle(
+            "RailSmall",
+            fontName="Helvetica",
+            fontSize=7.2,
+            leading=8.8,
+            textColor=MUTED,
+            alignment=TA_LEFT,
+        ),
+        "footer": ParagraphStyle(
+            "Footer",
+            fontName="Helvetica",
+            fontSize=7.2,
+            leading=8.5,
+            textColor=MUTED,
+            alignment=TA_LEFT,
+        ),
     }
-    
-    .page-container {
-        display: grid;
-        grid-template-columns: 70mm 1fr;
-        height: 296mm;
-        width: 210mm;
-    }
 
-    .sidebar {
-        background-color: #f8fafc;
-        color: #334155;
-        padding: 12px 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        border-right: 1px solid #e2e8f0;
-    }
 
-    .profile-pic-container {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        border: 3px solid #fff;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin: 0 auto;
-    }
+def _paragraph(
+    pdf: canvas.Canvas,
+    text: str,
+    style: ParagraphStyle,
+    x: float,
+    y_top: float,
+    width: float,
+) -> float:
+    paragraph = Paragraph(text, style)
+    _, height = paragraph.wrap(width, PAGE_HEIGHT)
+    paragraph.drawOn(pdf, x, y_top - height)
+    return y_top - height
 
-    .profile-pic {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
 
-    .contact-section h1 {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e293b;
-        margin: 0 0 6px 0;
-        text-align: center;
-        letter-spacing: -0.5px;
-        line-height: 1.1;
-    }
+def _paragraph_height(
+    text: str,
+    style: ParagraphStyle,
+    width: float,
+) -> tuple[Paragraph, float]:
+    paragraph = Paragraph(text, style)
+    _, height = paragraph.wrap(width, PAGE_HEIGHT)
+    return paragraph, height
 
-    .subtitle {
-        text-align: center;
-        color: #2563eb;
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        font-size: 13px;
-        line-height: 1.25;
-    }
 
-    .contact-details {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        font-size: 11px;
-    }
+def _draw_profile_photo(
+    pdf: canvas.Canvas,
+    center_x: float,
+    center_y: float,
+    radius: float,
+) -> None:
+    if not PROFILE_PATH.exists():
+        raise FileNotFoundError(f"Missing profile image: {PROFILE_PATH}")
 
-    .contact-details p { margin: 0; display: flex; align-items: center; gap: 8px; }
-    .contact-details a { 
-        color: #475569; 
-        text-decoration: none; 
-        font-weight: 500;
-        border-bottom: 1px dotted #94a3b8;
-    }
+    pdf.setFillColor(colors.HexColor("#2A4667"))
+    pdf.circle(center_x + 1.2, center_y - 1.2, radius + 2.1, fill=1, stroke=0)
+    pdf.setFillColor(WHITE)
+    pdf.circle(center_x, center_y, radius + 1.6, fill=1, stroke=0)
 
-    .section-title {
-        font-size: 12.5px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #64748b;
-        font-weight: 700;
-        border-bottom: 2px solid #cbd5e1;
-        padding-bottom: 4px;
-        margin-bottom: 8px;
-    }
+    pdf.saveState()
+    clip_path = pdf.beginPath()
+    clip_path.circle(center_x, center_y, radius)
+    pdf.clipPath(clip_path, stroke=0, fill=0)
+    pdf.drawImage(
+        ImageReader(str(PROFILE_PATH)),
+        center_x - radius,
+        center_y - radius,
+        2 * radius,
+        2 * radius,
+        preserveAspectRatio=True,
+        anchor="c",
+        mask="auto",
+    )
+    pdf.restoreState()
 
-    .main-content {
-        padding: 28px 28px 8px 28px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
 
-    .main-section {
-        margin-bottom: 6px;
-    }
-    
-    .main-title {
-        font-size: 15.5px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 3px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 2px;
-    }
+def _draw_header(
+    pdf: canvas.Canvas,
+    styles: dict[str, ParagraphStyle],
+) -> None:
+    header_bottom = PAGE_HEIGHT - HEADER_HEIGHT
+    pdf.setFillColor(NAVY)
+    pdf.rect(0, header_bottom, PAGE_WIDTH, HEADER_HEIGHT, fill=1, stroke=0)
+    pdf.setFillColor(BLUE)
+    pdf.rect(0, header_bottom, 4.5, HEADER_HEIGHT, fill=1, stroke=0)
 
-    .about-text {
-        text-align: left;
-        margin-bottom: 2px;
-        color: #334155;
-        text-align: justify;
-    }
+    photo_x = 22.5 * mm
+    photo_y = PAGE_HEIGHT - HEADER_HEIGHT / 2
+    _draw_profile_photo(pdf, photo_x, photo_y, 13.2 * mm)
 
-    .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 1px;
-    }
+    identity_x = 42 * mm
+    identity_width = 84 * mm
+    y = PAGE_HEIGHT - 10 * mm
+    y = _paragraph(
+        pdf,
+        "Tom de Groot",
+        styles["name"],
+        identity_x,
+        y,
+        identity_width,
+    )
+    y -= 2
+    y = _paragraph(
+        pdf,
+        "INDEPENDENT RESEARCHER",
+        styles["header_title"],
+        identity_x,
+        y,
+        identity_width,
+    )
+    y -= 2.5
+    y = _paragraph(
+        pdf,
+        "AI-assisted mathematics | formal verification | scientific ML",
+        styles["header_focus"],
+        identity_x,
+        y,
+        identity_width,
+    )
 
-    .item-title {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 14px;
-    }
+    contact_y = header_bottom + 17 * mm
+    contact_y = _paragraph(
+        pdf,
+        "Grijpskerk, NL | +31 6 314 90 416 | "
+        '<link href="mailto:tomthegreatest04@gmail.com" '
+        'color="#D5E0F0">tomthegreatest04@gmail.com</link>',
+        styles["header_contact"],
+        identity_x,
+        contact_y,
+        identity_width,
+    )
+    _paragraph(
+        pdf,
+        '<link href="https://github.com/Tomodovodoo" '
+        'color="#78A5FF">GitHub</link>  |  '
+        '<link href="https://x.com/Tomodovodoo" '
+        'color="#78A5FF">Research notes</link>  |  '
+        '<link href="https://linkedin.com/in/tomodovodoo" '
+        'color="#78A5FF">LinkedIn</link>',
+        styles["header_contact"],
+        identity_x,
+        contact_y - 1.5,
+        identity_width,
+    )
 
-    .item-date {
-        color: #64748b;
-        font-size: 10.5px;
-        font-weight: 500;
-        white-space: nowrap; 
-        background: #f1f5f9;
-        padding: 1.5px 6px;
-        border-radius: 4px;
-    }
+    quote_x = 132 * mm
+    quote_width = PAGE_WIDTH - quote_x - MARGIN
+    quote_bottom = header_bottom + 10 * mm
+    quote_height = 36 * mm
+    pdf.setFillColor(NAVY_2)
+    pdf.setStrokeColor(colors.HexColor("#2B4E72"))
+    pdf.setLineWidth(0.8)
+    pdf.roundRect(
+        quote_x,
+        quote_bottom,
+        quote_width,
+        quote_height,
+        6,
+        fill=1,
+        stroke=1,
+    )
+    pdf.setFillColor(BLUE)
+    pdf.roundRect(
+        quote_x,
+        quote_bottom,
+        3.2,
+        quote_height,
+        1.6,
+        fill=1,
+        stroke=0,
+    )
+    quote_inner_x = quote_x + 10
+    quote_inner_width = quote_width - 18
+    quote_y = quote_bottom + quote_height - 9
+    quote_y = _paragraph(
+        pdf,
+        "EXTERNAL VALIDATION",
+        styles["quote_label"],
+        quote_inner_x,
+        quote_y,
+        quote_inner_width,
+    )
+    quote_y -= 7
+    quote_y = _paragraph(
+        pdf,
+        '&quot;the gold standard of LLM-aided mathematics&quot;',
+        styles["quote"],
+        quote_inner_x,
+        quote_y,
+        quote_inner_width,
+    )
+    quote_y -= 7
+    _paragraph(
+        pdf,
+        '<link href="https://www.daniellitt.com/blog/2026/2/20/'
+        'mathematics-in-the-library-of-babel" color="#78A5FF">'
+        "Daniel Litt</link> on FirstProof Problem 9",
+        styles["quote_source"],
+        quote_inner_x,
+        quote_y,
+        quote_inner_width,
+    )
 
-    .item-desc {
-        color: #475569;
-        font-size: 12.2px;
-        margin: 0 0 1px 0;
-        line-height: 1.45;
-    }
-    
-    .link-style {
-        color: #2563eb;
-        text-decoration: none;
-        font-weight: 500;
-    }
 
-    .skills-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    .skill-category {
-        font-size: 11.5px;
-        line-height: 1.3;
-    }
-    .skill-category strong { color: #0f172a; font-weight: 600; }
+def _draw_section_heading(
+    pdf: canvas.Canvas,
+    title: str,
+    x: float,
+    y_top: float,
+    width: float,
+    style: ParagraphStyle,
+) -> float:
+    pdf.setFillColor(BLUE)
+    pdf.roundRect(x, y_top - 9, 3.2, 9, 1.6, fill=1, stroke=0)
+    y = _paragraph(pdf, title.upper(), style, x + 8, y_top, width - 8)
+    pdf.setStrokeColor(RULE)
+    pdf.setLineWidth(0.6)
+    pdf.line(x, y - 4, x + width, y - 4)
+    return y - 12
 
-    @media print {
-        @page { margin: 0; }
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
-    """
 
-    full_html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Tom de Groot - CV</title>
-        <style>{css}</style>
-    </head>
-    <body>
-        <div class="page-container">
-            <!-- SIDEBAR -->
-            <div class="sidebar">
-                <div class="profile-pic-container">
-                    <img src="Profile_pic.jpg" class="profile-pic" alt="Profile">
-                </div>
-                
-                <div class="contact-section">
-                    <h1>Tom de Groot</h1>
-                    <span class="subtitle">Frontier Evaluation &<br>Formal Verification</span>
-                    
-                    <div class="contact-details">
-                        <p>Grijpskerk, NL</p>
-                        <p><a href="tel:+31631490416">+31 6 314 90 416</a></p>
-                        <p><a href="mailto:tomthegreatest04@gmail.com">tomthegreatest04@gmail.com</a></p>
-                        <p><a href="https://github.com/Tomodovodoo">github.com/Tomodovodoo</a></p>
-                        <p><a href="https://x.com/Tomodovodoo">x.com/Tomodovodoo</a></p>
-                    </div>
-                </div>
+def _draw_date_pill(
+    pdf: canvas.Canvas,
+    label: str,
+    x_right: float,
+    y_top: float,
+) -> float:
+    font_name = "Helvetica-Bold"
+    font_size = 6.9
+    height = 13
+    width = stringWidth(label, font_name, font_size) + 10
+    x = x_right - width
+    y = y_top - height
+    pdf.setFillColor(BLUE_PALE)
+    pdf.roundRect(x, y, width, height, 4, fill=1, stroke=0)
+    pdf.setFillColor(BLUE_DARK)
+    pdf.setFont(font_name, font_size)
+    pdf.drawCentredString(x + width / 2, y + 3.6, label)
+    return width
 
-                <div>
-                    <div class="section-title">Technical Stack</div>
-                    <div class="skills-grid">
-                        <div class="skill-category"><strong>ML/Agents:</strong> TensorFlow, n8n, OpenClaw, Slurm</div>
-                        <div class="skill-category"><strong>Formal:</strong> Lean 4, mathlib, Lake, CI/CD for proofs, auto-formalization.</div>
-                        <div class="skill-category"><strong>Tools:</strong> Git, GitHub, Linux/HPC, VS Code, Docker, Numba/Njit</div>
-                        <div class="skill-category"><strong>Software Languages:</strong> Python, Lean.</div>
-                        <div class="skill-category"><strong>Spoken Languages:</strong> Dutch, English.</div>
-                    </div>
-                </div>
 
-                <div>
-                    <div class="section-title">Education</div>
-                    <div class="job-item" style="margin-bottom: 8px;">
-                        <div class="item-title">BSc Chemistry</div>
-                        <div class="item-desc" style="margin-bottom:0;">University of Groningen</div>
-                        <div class="item-desc" style="font-size: 10.5px; color:#64748b; margin-bottom:0;">2021 - 2025</div>
-                        <div class="item-desc" style="font-style: italic; font-size: 10.5px; margin-bottom: 2px;">Track: Chemistry of Life</div>
-                        <div class="item-desc" style="font-size: 10px; line-height: 1.2; color:#334155;">
-                            <strong>Thesis:</strong> Evaluating and Optimizing NMR Prediction with Graph Neural Networks<br>(Chem-AI)
-                        </div>
-                    </div>
-                </div>
+def _draw_card(
+    pdf: canvas.Canvas,
+    *,
+    tag: str,
+    title: str,
+    date: str,
+    body: str,
+    x: float,
+    y_top: float,
+    width: float,
+    styles: dict[str, ParagraphStyle],
+    gap_after: float = 7,
+) -> float:
+    padding_x = 12
+    padding_y = 9
+    accent_width = 3.2
+    content_x = x + padding_x
+    content_width = width - 2 * padding_x
 
-                <div>
-                    <div class="section-title">Awards</div>
-                    <div class="job-item" style="margin-bottom: 5px;">
-                        <div class="item-title" style="font-size: 11px;"><a href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" class="link-style">Chess.com Member of the Year 2021</a></div>
-                    </div>
-                    <div class="job-item">
-                        <div class="item-title" style="font-size: 11px;"><a href="https://harmonic.fun/news#blog-post-mathematician-sponsorships" class="link-style">Harmonic Rising Mathematician Grant</a></div>
-                        <div class="item-desc" style="font-size: 10px;">(Details on request)</div>
-                    </div>
-                </div>
-            </div>
+    tag_paragraph, tag_height = _paragraph_height(
+        tag.upper(),
+        styles["card_tag"],
+        content_width,
+    )
+    date_width = stringWidth(date, "Helvetica-Bold", 6.9) + 10 if date else 0
+    title_width = content_width - date_width - (7 if date else 0)
+    title_paragraph, title_height = _paragraph_height(
+        title,
+        styles["card_title"],
+        title_width,
+    )
+    body_paragraph, body_height = _paragraph_height(
+        body,
+        styles["card_body"],
+        content_width,
+    )
 
-            <!-- MAIN CONTENT -->
-            <div class="main-content">
-                <div class="main-section">
-                    <div class="main-title">About Me</div>
-                    <div class="about-text">
-                        Hi, I'm Tom. I'm a BSc Chemistry graduate from the University of Groningen (Life Sciences track). 
-                        My thesis in the Pollice Group focused on optimizing NMR prediction with GNNs. 
-                        Post-graduation, I pivoted to mathematics and formal methods, becoming an active contributor to the <strong>PNT+</strong> Lean formalization project. 
-                        I've built a strong foundation in student mathematics and programming, which I use to design and evaluate AI systems, their output, and create frameworks for them.
-                    </div>
-                    <div class="about-text" style="margin-top: 4px;">
-                        <strong>Goals!</strong> Focusing on frontier model capability work, stress-testing, and evaluation design. 
-                        My current goal is to use agentic systems and formal verification (Lean 4) to contribute to open science in mathematics.
-                    </div>
-                </div>
+    height = (
+        2 * padding_y
+        + tag_height
+        + 4
+        + title_height
+        + 5
+        + body_height
+    )
+    y_bottom = y_top - height
 
-                <div class="main-section">
-                    <div class="main-title">Selected Research & Formalization</div>
-                    
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">Prime Number Theorem And (PNT+)</span>
-                            <span class="item-date">Late 2025 - Present</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 3px;">
-                            Active contributor to the Lean 4 formalization project led by Alex Kontorovich and Terence Tao. 
-                            Using an AI system called Aristotle, I have formalized multiple intermediate theorems, and I am a recent maintainer of the Aristotle branch alongside Pietro Monticone.
-                        </p>
-                        <p class="item-desc">
-                            My current focus herein is the scaling up of Aristotle and other agentic systems to formalize more mathematics.
-                            <a href="https://github.com/AlexKontorovich/PrimeNumberTheoremAnd/pulls?q=is%3Apr+author%3ATomodovodoo" class="link-style">Merged PRs</a>
-                        </p>
-                    </div>
+    pdf.setFillColor(colors.HexColor("#E4E9F1"))
+    pdf.roundRect(x + 1.2, y_bottom - 1.2, width, height, 5, fill=1, stroke=0)
+    pdf.setFillColor(CARD_BG)
+    pdf.setStrokeColor(RULE)
+    pdf.setLineWidth(0.65)
+    pdf.roundRect(x, y_bottom, width, height, 5, fill=1, stroke=1)
+    pdf.setFillColor(BLUE)
+    pdf.roundRect(
+        x,
+        y_bottom,
+        accent_width,
+        height,
+        accent_width / 2,
+        fill=1,
+        stroke=0,
+    )
 
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">First Proof Problem 9 (Lean-verified Solution)</span>
-                            <span class="item-date">Feb 2026</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 3px;">
-                            Produced the only credible formalized solution during the 7 day challenge, recognized by among others <strong>Kevin Buzzard</strong> and <strong>Daniel Litt</strong>, who gave it the context of "gold standard of LLM-aided mathematics." 
-                            Created an autonomous agent that worked on the informal proof, and orchestrated multiple LLM agents to formalize it in Lean 4.
-                            <a href="https://github.com/Tomodovodoo/firstproof" class="link-style">View Repository</a>
-                        </p>
-                    </div>
-                </div>
+    current_y = y_top - padding_y
+    tag_paragraph.drawOn(pdf, content_x, current_y - tag_height)
+    current_y -= tag_height + 4
+    title_paragraph.drawOn(pdf, content_x, current_y - title_height)
+    if date:
+        _draw_date_pill(pdf, date, x + width - padding_x, current_y)
+    current_y -= title_height + 5
+    body_paragraph.drawOn(pdf, content_x, current_y - body_height)
+    return y_bottom - gap_after
 
-                <div class="main-section">
-                    <div class="main-title">Engineering Projects</div>
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">BaanSolliciteren (Agentic Job Automation)</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 4px;">
-                            Engineered a semi-agentic system to automate my job search and its documentation. Built a custom <strong>Gmail MCP server</strong> (Model Context Protocol) to enable real-time status tracking and ranking of vacancies.
-                        </p>
-                        <p class="item-desc">
-                            Implemented HTML-to-JSON schema parsing and automated LLM-based fit-scoring. Developed logic to cross-reference vacancy descriptions against personal descriptors, significantly reducing manual review time.
-                        </p>
-                    </div>
-                    
-                     <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">Technical Collection & Visualizations</span>
-                        </div>
-                        <p class="item-desc">
-                           Multi-year repository of technical interests and explorations: including from-scratch audio-to-text implementations and interactive visualizations of high-dimensional datasets (e.g., vaccine distribution and water quality metrics). Focused on extracting insights from real-world data.
-                           <a href="https://github.com/Tomodovodoo/Collection-of-Projects" class="link-style">GitHub</a>
-                        </p>
-                    </div>
-                </div>
 
-                <div class="main-section">
-                    <div class="main-title">Professional Experience</div>
-                    
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Transcom (for Odido)</span>
-                            <span class="item-date">2024</span>
-                        </div>
-                        <p class="item-desc">Demonstrated reliable performance in customer service, maintaining consistent top-tier customer satisfaction ratings and learning to explain at every level.</p>
-                    </div>
+def _draw_metric(
+    pdf: canvas.Canvas,
+    value: str,
+    label: str,
+    y_top: float,
+    styles: dict[str, ParagraphStyle],
+) -> float:
+    height = 39
+    padding = 8
+    pdf.setFillColor(BLUE_PALE)
+    pdf.setStrokeColor(colors.HexColor("#C9D8FF"))
+    pdf.setLineWidth(0.6)
+    pdf.roundRect(
+        RAIL_X,
+        y_top - height,
+        RAIL_WIDTH,
+        height,
+        5,
+        fill=1,
+        stroke=1,
+    )
+    value_y = _paragraph(
+        pdf,
+        value,
+        styles["metric_value"],
+        RAIL_X + padding,
+        y_top - 5,
+        RAIL_WIDTH - 2 * padding,
+    )
+    _paragraph(
+        pdf,
+        label,
+        styles["metric_label"],
+        RAIL_X + padding,
+        value_y - 1,
+        RAIL_WIDTH - 2 * padding,
+    )
+    return y_top - height - 6
 
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Teamspot (Regional Director)</span>
-                            <span class="item-date">2022 - 2024</span>
-                        </div>
-                        <p class="item-desc">Coordinated regional school projects and taught teachers, performed technical testing/data entry within an Agile/Jira environment, alongside in-depth bug testing and general responsibilities.</p>
-                    </div>
 
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Chess.com</span>
-                            <span class="item-date">2022</span>
-                        </div>
-                        <p class="item-desc">Moderated and proctored international chess events; recognized as <strong>Member of the Year 2021</strong> for community ownership and chess coaching.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
+def _draw_rail_item(
+    pdf: canvas.Canvas,
+    title: str,
+    meta: str,
+    body: str,
+    y_top: float,
+    styles: dict[str, ParagraphStyle],
+    *,
+    gap_after: float = 7,
+) -> float:
+    y = _paragraph(
+        pdf,
+        title,
+        styles["rail_title"],
+        RAIL_X,
+        y_top,
+        RAIL_WIDTH,
+    )
+    if meta:
+        y = _paragraph(
+            pdf,
+            meta,
+            styles["rail_small"],
+            RAIL_X,
+            y - 1,
+            RAIL_WIDTH,
+        )
+    if body:
+        y = _paragraph(
+            pdf,
+            body,
+            styles["rail_body"],
+            RAIL_X,
+            y - 2,
+            RAIL_WIDTH,
+        )
+    return y - gap_after
 
-    # Write HTML
-    with open(html_file, 'w', encoding='utf-8') as f:
-        f.write(full_html)
-    print(f"Generated {html_file}")
 
-    # Find Browser (Edge is standard on Windows)
-    edge_paths = [
-        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
-    ]
-    browser_exe = None
-    for path in edge_paths:
-        if os.path.exists(path):
-            browser_exe = path
-            break
-    
-    if not browser_exe:
-        print("Error: Could not find Microsoft Edge executable.")
-        return
+def _draw_main_column(
+    pdf: canvas.Canvas,
+    styles: dict[str, ParagraphStyle],
+) -> float:
+    y = BODY_TOP
+    y = _draw_section_heading(
+        pdf,
+        "Selected Research",
+        MAIN_X,
+        y,
+        MAIN_WIDTH,
+        styles["section"],
+    )
+    y = _draw_card(
+        pdf,
+        tag="Open problem | Candidate proof",
+        title="A Raynaud-Bundle Route",
+        date="Jul 2026",
+        body=(
+            "Steered GPT-5.5 Pro and GPT-5.6 Sol Pro from a partial result to "
+            "a complete candidate proof of Daniel Litt's problem. Auditing the "
+            "argument with his feedback. "
+            '<link href="https://x.com/Tomodovodoo/status/2076027408042573905" '
+            'color="#2D63FF">Research note</link>  |  '
+            '<link href="https://problemsilike.com/forum/thread/14" '
+            'color="#2D63FF">Proof thread</link>'
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+    )
+    y = _draw_card(
+        pdf,
+        tag="FirstProof | Lean verified",
+        title="Problem 9",
+        date="Feb 2026",
+        body=(
+            "Orchestrated LLM agents from informal search to a Lean 4 proof. "
+            "The repository's only solved problem. "
+            '<link href="https://github.com/Tomodovodoo/firstproof" '
+            'color="#2D63FF">Proof + code</link>'
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+    )
+    y = _draw_card(
+        pdf,
+        tag="Open-source formalization",
+        title="Prime Number Theorem And (PNT+)",
+        date="2025 - Present",
+        body=(
+            "Merged Lean proofs; compilation and adversarial review as hard "
+            "checks on model-generated mathematics. "
+            '<link href="https://github.com/AlexKontorovich/'
+            'PrimeNumberTheoremAnd/pulls?q=is%3Apr+author%3ATomodovodoo" '
+            'color="#2D63FF">Merged PRs</link>'
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+        gap_after=11,
+    )
 
-    # Generate PDF
-    print(f"Generating PDF using {browser_exe}...")
-    subprocess.run([
-        browser_exe,
-        "--headless",
-        "--print-to-pdf=" + pdf_file,
-        "--no-pdf-header-footer",
-        html_file
-    ], check=True, shell=True)
-    
-    # Post-process to ensure single page
-    print("Post-processing PDF to strict 1-page limit...")
-    try:
-        reader = PdfReader(pdf_file)
-        if len(reader.pages) > 1:
-            print(f"PDF has {len(reader.pages)} pages. Trimming to 1 page...")
-            writer = PdfWriter()
-            writer.add_page(reader.pages[0])
-            with open(pdf_file, "wb") as f:
-                writer.write(f)
-            print("Trimmed to single page.")
-        else:
-            print("PDF is already 1 page.")
-    except Exception as e:
-        print(f"Warning: Could not trim PDF: {e}")
+    y = _draw_section_heading(
+        pdf,
+        "Scientific & Agent Systems",
+        MAIN_X,
+        y,
+        MAIN_WIDTH,
+        styles["section"],
+    )
+    y = _draw_card(
+        pdf,
+        tag="Simulation | Certification | RL",
+        title="Bazaar_ML",
+        date="2026 - Present",
+        body=(
+            "<b>49,248</b> executable evaluation cases; <b>99.85%</b> "
+            "sampling-pool coverage; deterministic traces, provenance, and "
+            "agent-training hooks."
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+    )
+    y = _draw_card(
+        pdf,
+        tag="Chemistry | Graph neural networks",
+        title="NMR Prediction",
+        date="2024 - 2025",
+        body=(
+            "Curated molecular/NMR data and benchmarked GNNs on HPC under "
+            "controlled splits and evaluation."
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+    )
+    y = _draw_card(
+        pdf,
+        tag="Agentic engineering",
+        title="BaanSoliciteren",
+        date="2025 - 2026",
+        body=(
+            "Auditable pipeline for vacancy ingestion, fit scoring, and state "
+            "tracking. "
+            '<link href="https://github.com/Tomodovodoo/BaanSoliciteren" '
+            'color="#2D63FF">GitHub</link>'
+        ),
+        x=MAIN_X,
+        y_top=y,
+        width=MAIN_WIDTH,
+        styles=styles,
+        gap_after=0,
+    )
+    return y
 
-    print(f"Generated {pdf_file}")
 
-    # Generate Screenshot (PNG)
-    # Dimensions for Sidebar layout: Keep consistent
-    print(f"Generating PNG preview...")
-    subprocess.run([
-        browser_exe,
-        "--headless",
-        "--screenshot=" + png_file,
-        "--window-size=794,1123", 
-        "--force-device-scale-factor=2",
-        html_file
-    ], check=True, shell=True)
-    print(f"Generated {png_file}")
+def _draw_rail(
+    pdf: canvas.Canvas,
+    styles: dict[str, ParagraphStyle],
+) -> float:
+    y = BODY_TOP
+    y = _draw_section_heading(
+        pdf,
+        "At a Glance",
+        RAIL_X,
+        y,
+        RAIL_WIDTH,
+        styles["rail_section"],
+    )
+    y = _draw_metric(
+        pdf,
+        "LEAN 4",
+        "Machine-checked FirstProof solution",
+        y,
+        styles,
+    )
+    y = _draw_metric(
+        pdf,
+        "49,248",
+        "Executable evaluation cases",
+        y,
+        styles,
+    )
+    y = _draw_metric(
+        pdf,
+        "99.85%",
+        "Sampling-pool coverage",
+        y,
+        styles,
+    )
+
+    y -= 5
+    y = _draw_section_heading(
+        pdf,
+        "Experience",
+        RAIL_X,
+        y,
+        RAIL_WIDTH,
+        styles["rail_section"],
+    )
+    y = _draw_rail_item(
+        pdf,
+        "AI Engineer",
+        "SoundImports | Present",
+        "Prediction systems, AI automation, and containerized AWS services.",
+        y,
+        styles,
+    )
+    y = _draw_rail_item(
+        pdf,
+        "Earlier",
+        "Teamspot | Transcom | Chess.com",
+        "Regional direction, QA, support, and international events.",
+        y,
+        styles,
+    )
+
+    y -= 3
+    y = _draw_section_heading(
+        pdf,
+        "Methods & Tools",
+        RAIL_X,
+        y,
+        RAIL_WIDTH,
+        styles["rail_section"],
+    )
+    y = _draw_rail_item(
+        pdf,
+        "Research",
+        "",
+        "Agent workflows, evaluation design, formal verification",
+        y,
+        styles,
+        gap_after=5,
+    )
+    y = _draw_rail_item(
+        pdf,
+        "Code",
+        "",
+        "Python, Lean 4, PyTorch, SQL, RDKit",
+        y,
+        styles,
+        gap_after=5,
+    )
+    y = _draw_rail_item(
+        pdf,
+        "Systems",
+        "",
+        "Linux/HPC, AWS, Docker, Git",
+        y,
+        styles,
+    )
+
+    y -= 3
+    y = _draw_section_heading(
+        pdf,
+        "Education",
+        RAIL_X,
+        y,
+        RAIL_WIDTH,
+        styles["rail_section"],
+    )
+    y = _draw_rail_item(
+        pdf,
+        "BSc Chemistry",
+        "University of Groningen | 2021 - 2025",
+        "Chemistry of Life. Thesis: GNN evaluation for NMR prediction.",
+        y,
+        styles,
+    )
+
+    y -= 3
+    y = _draw_section_heading(
+        pdf,
+        "Recognition",
+        RAIL_X,
+        y,
+        RAIL_WIDTH,
+        styles["rail_section"],
+    )
+    y = _draw_rail_item(
+        pdf,
+        '<link href="https://harmonic.fun/news/mathematician-sponsorships/" '
+        'color="#2D63FF">Harmonic Rising Mathematician</link>',
+        "",
+        "",
+        y,
+        styles,
+        gap_after=5,
+    )
+    y = _draw_rail_item(
+        pdf,
+        '<link href="https://www.chess.com/news/view/'
+        '2021-chesscom-awards-winners#member" color="#2D63FF">'
+        "Chess.com Member of the Year 2021</link>",
+        "",
+        "",
+        y,
+        styles,
+        gap_after=0,
+    )
+    return y
+
+
+def _draw_footer(
+    pdf: canvas.Canvas,
+    styles: dict[str, ParagraphStyle],
+) -> None:
+    pdf.setStrokeColor(RULE)
+    pdf.setLineWidth(0.6)
+    pdf.line(MARGIN, 8.5 * mm, PAGE_WIDTH - MARGIN, 8.5 * mm)
+    _paragraph(
+        pdf,
+        "Research artifacts: "
+        '<link href="https://github.com/Tomodovodoo" '
+        'color="#2D63FF">github.com/Tomodovodoo</link>  |  '
+        '<link href="https://x.com/Tomodovodoo" '
+        'color="#2D63FF">x.com/Tomodovodoo</link>',
+        styles["footer"],
+        MARGIN,
+        7.5 * mm,
+        PAGE_WIDTH - 2 * MARGIN,
+    )
+
+
+def build_pdf() -> None:
+    styles = _styles()
+    pdf = canvas.Canvas(str(PDF_PATH), pagesize=A4, pageCompression=1)
+    pdf.setTitle("Tom de Groot - Independent Researcher")
+    pdf.setAuthor("Tom de Groot")
+    pdf.setSubject("AI-assisted mathematics, formal verification, and scientific ML")
+
+    pdf.setFillColor(PAGE_BG)
+    pdf.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT, fill=1, stroke=0)
+    _draw_header(pdf, styles)
+    main_bottom = _draw_main_column(pdf, styles)
+    rail_bottom = _draw_rail(pdf, styles)
+    _draw_footer(pdf, styles)
+
+    if min(main_bottom, rail_bottom) < BODY_BOTTOM:
+        raise RuntimeError(
+            "CV content crossed the safe bottom margin: "
+            f"main={main_bottom / mm:.1f} mm, rail={rail_bottom / mm:.1f} mm."
+        )
+
+    pdf.showPage()
+    pdf.save()
+
+
+def render_png() -> None:
+    with fitz.open(PDF_PATH) as document:
+        if document.page_count != 1:
+            raise RuntimeError(
+                f"Expected a one-page CV, generated {document.page_count} pages."
+            )
+        pixmap = document[0].get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+        pixmap.save(PNG_PATH)
+
+
+def validate_outputs() -> None:
+    reader = PdfReader(str(PDF_PATH))
+    if len(reader.pages) != 1:
+        raise RuntimeError(f"Expected one PDF page, found {len(reader.pages)}.")
+
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    required_phrases = (
+        "Tom de Groot",
+        "INDEPENDENT RESEARCHER",
+        "Raynaud-Bundle",
+        "FirstProof",
+        "LEAN 4",
+        "49,248",
+        "GRAPH NEURAL NETWORKS",
+        "SoundImports",
+        "BaanSoliciteren",
+    )
+    missing = [phrase for phrase in required_phrases if phrase not in text]
+    if missing:
+        raise RuntimeError(f"Generated PDF is missing required text: {missing}")
+
+    annotations = reader.pages[0].get("/Annots", [])
+    if len(annotations) < 8:
+        raise RuntimeError(
+            f"Expected at least 8 embedded links, found {len(annotations)}."
+        )
+
+    if not PNG_PATH.exists() or PNG_PATH.stat().st_size == 0:
+        raise RuntimeError("PNG preview was not generated.")
+
+
+def generate_cv() -> None:
+    build_pdf()
+    render_png()
+    validate_outputs()
+    print(f"Generated {PDF_PATH}")
+    print(f"Generated {PNG_PATH}")
+
 
 if __name__ == "__main__":
     generate_cv()

@@ -1,0 +1,75 @@
+PERIODIC LABS - RESEARCH SCIENTIST, DATA
+APPLICATION ANSWERS
+
+Name
+Tom de Groot
+
+Email
+tomthegreatest04@gmail.com
+
+Resume
+SimpleCV/CV.pdf
+
+Social media profile
+https://x.com/Tomodovodoo
+
+What excites you most about Periodic Labs?
+
+Periodic Labs is building the loop I want to work on: scientific workflow -> hard evaluation -> failure analysis -> better data or environment -> training.
+
+I have worked across that loop in NMR prediction, production AI, Lean-verified mathematics, and deterministic agent environments. I care about provenance, contamination, coverage, and whether a benchmark measures a real scientific decision. Building those systems with experimental and computational scientists is the draw.
+
+How did you learn about Periodic Labs?
+
+[CONFIRM BEFORE SUBMISSION: Social Media, News Article, Friends, At Work, or Podcast.]
+
+Please name 1-3 examples of outstanding work you've done.
+
+1. Independent AI-for-math research. In July 2026 I steered GPT-5.5 Pro and GPT-5.6 Sol Pro from a partial result to a complete candidate proof of Daniel Litt's open problem using Raynaud bundles. I am now auditing the argument with his feedback. Earlier, I orchestrated the Lean-verified solution to FirstProof Problem 9, which Litt called "the gold standard of LLM-aided mathematics."
+
+2. Bazaar_ML. I built a simulator and RL environment with a 49,248-case executable certification matrix, 99.85% sampling-pool coverage, deterministic traces, source hashes, and explicit unsupported behavior.
+
+3. NMR prediction. For my chemistry thesis, I cleaned molecular/NMR data and benchmarked graph neural networks on HPC under controlled splits and evaluation.
+
+Tell us about a project you've worked on using LLMs or other AI tools.
+
+For FirstProof Problem 9, I treated LLMs as fallible research workers. Separate agents searched for proof strategies, attacked assumptions, repaired arguments, and translated the result into Lean 4.
+
+Model confidence never counted as evidence. Every accepted step had to compile in a pinned Lean/mathlib environment. Compiler failures became targeted feedback for the next attempt. The result was an informal proof plus a reproducible machine-checked formalization.
+
+Please name 5 different mistakes generative AI has made in your interactions with it.
+
+1. Invented a plausible Lean theorem or namespace that did not exist in the pinned mathlib version.
+
+2. Quietly proved a weaker theorem by adding an assumption or changing a quantifier.
+
+3. Claimed verification while an upstream dependency still contained `sorry`.
+
+4. Guessed a simulator mechanic's timing or scope instead of marking it unknown.
+
+5. Merged salts, tautomers, stereoisomers, or conflicting identifiers into one chemical record.
+
+Please provide concrete examples of how LLMs can accelerate science in your domain of scientific expertise. Be as specific as possible.
+
+In NMR prediction, agents can reconcile names, SMILES, InChI, salts, tautomers, and stereochemistry; extract solvent, field strength, temperature, and reference standards; then emit a provenance report for every transformation.
+
+They can design controlled evaluations: scaffold versus random splits, per-functional-group errors, calibration, and architecture ablations. Scripts, RDKit, held-out data, and expert review remain the judges.
+
+In formal mathematics, agents can search for lemmas, decompose proofs, translate arguments into Lean, and generate counterexample searches. Lean turns each attempt into an executable evaluation; failed goals and compiler errors become structured data for the next run.
+
+Can you work out of our office in Menlo Park, CA weekly?
+
+[CONFIRM BEFORE SUBMISSION: Yes or No.]
+
+Will you now or in the future need sponsorship to work for any employer in the US?
+
+[CONFIRM BEFORE SUBMISSION: Yes or No.]
+
+FINAL REVIEW CHECKLIST
+
+- Confirm how you learned about Periodic Labs.
+- Confirm Menlo Park weekly-office availability and relocation intent.
+- Confirm US work-authorization/sponsorship.
+- Confirm the SoundImports employment date.
+- Verify the private Bazaar_ML metrics are appropriate to disclose.
+- Upload SimpleCV/CV.pdf and proofread the Ashby autofill.
