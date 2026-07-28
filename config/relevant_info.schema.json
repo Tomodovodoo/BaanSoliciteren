@@ -15,62 +15,96 @@
     "ContactJob"
   ],
   "properties": {
-    "Locatie": { "type": "string" },
-
+    "Locatie": {
+      "type": "string"
+    },
     "Deadline": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date",
       "description": "YYYY-MM-DD"
     },
-
-    "Notes": { "type": "string" },
-
+    "Notes": {
+      "type": "string"
+    },
     "Link": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "uri",
       "description": "Full URL to the vacancy or doc"
     },
-
     "Salary": {
-      "type": ["number", "null"],
+      "type": [
+        "number",
+        "null"
+      ],
       "minimum": 0,
       "description": "Single number, minimum monthly salary in EUR."
     },
-
-
     "Fit": {
       "oneOf": [
-        { "type": "number", "minimum": 0, "maximum": 10 },
-        { "type": "string", "enum": ["Strong", "Good", "Maybe", "Stretch", "Hold"] }
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        {
+          "type": "string",
+          "enum": [
+            "Strong",
+            "Good",
+            "Maybe",
+            "Stretch",
+            "Hold"
+          ]
+        }
       ],
       "description": "Score 0-10 or qualitative level"
     },
-
     "Preference": {
       "type": "number",
       "minimum": 0,
       "maximum": 10,
       "description": "Score 0-10"
     },
-
     "Contact": {
       "oneOf": [
-        { "type": "string", "format": "email" },
-        { "type": "string", "format": "uri" },
-        { "type": "string" }
+        {
+          "type": "string",
+          "format": "email"
+        },
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "type": "string"
+        }
       ],
       "description": "Email, profile URL, or other handle"
     },
-
-    "ContactNaam": { "type": "string" },
-
-    "ContactPhone": {
-      "type": "string",
-      "pattern": "^[0-9+()\\-\\s]{5,}$",
-      "description": "Flexible phone pattern (+31 …)"
+    "ContactNaam": {
+      "type": "string"
     },
-
-    "ContactJob": { "type": "string" }
+    "ContactPhone": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "pattern": "^[0-9+()\\-\\s]{5,}$"
+        }
+      ],
+      "description": "Flexible phone pattern (+31 ...) or blank when unavailable"
+    },
+    "ContactJob": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }

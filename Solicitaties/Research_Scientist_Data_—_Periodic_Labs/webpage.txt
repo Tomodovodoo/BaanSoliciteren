@@ -1,0 +1,36 @@
+Research Scientist, Data - Periodic Labs
+
+Source:
+https://jobs.ashbyhq.com/periodic-labs/d039ec58-a97d-47e1-b1e5-db003d772f77
+
+About Periodic Labs
+
+Periodic Labs is an AI and physical sciences company building state-of-the-art models to accelerate breakthroughs across materials, energy, and related fields.
+
+Role focus
+
+Own evaluations and data across the scientific-AI training stack. Construct evaluations from advanced scientific use cases, source external datasets, integrate internally generated experimental data, build RL training environments, and create a tight feedback loop between scientific use cases, model evaluation, and training data.
+
+Responsibilities
+
+- Own evaluation and data strategy across the training stack.
+- Translate scientific workflows into rigorous evaluations, benchmarks, and RL environments.
+- Source and assess datasets across chemistry, physics, materials science, mathematics, simulation, and laboratory instrumentation.
+- Build pipelines to ingest, clean, transform, and version heterogeneous large-scale training data.
+- Build analysis tools for data inspection, model-failure analysis, and evaluation or dataset prioritization.
+
+Desired background
+
+- Evaluation, benchmark, or RL-environment design for language models, agents, or scientific AI.
+- Data pipelines for pretraining, midtraining, post-training, or evaluation.
+- Judgment about scientific relevance, coverage, provenance, licensing, and contamination.
+- Data processing at scale, dataset versioning, and lineage tracking.
+- Hypothesis-driven research and controlled experiments.
+- Scientific experience in areas including chemistry, materials science, computational physics, semiconductors, or related physical sciences.
+
+Mechanics
+
+- Minimum education: Bachelor's degree or equivalent experience.
+- Locations: Menlo Park, CA or Montreal, Canada; San Francisco planned.
+- Compensation: $250,000-$350,000 plus equity.
+- Visa sponsorship: available.

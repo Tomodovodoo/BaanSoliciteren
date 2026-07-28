@@ -1,0 +1,79 @@
+PERIODIC LABS - RESEARCH SCIENTIST, DATA
+APPLICATION ANSWERS
+
+Name
+Tom de Groot
+
+Email
+tomthegreatest04@gmail.com
+
+Resume
+SimpleCV/CV.pdf
+
+Social media profile
+https://linkedin.com/in/tomodovodoo
+
+What excites you most about Periodic Labs?
+
+Periodic Labs is working on the feedback loop I most want to build: start from a real scientific workflow, turn it into an evaluation that exposes a model's capability gaps, and use those failures to decide what data or environment to build next. My background sits directly across that loop. I trained and evaluated graph neural networks for NMR prediction during my chemistry degree; I now build production AI and automation systems; and in my own work I build deterministic environments and hard, machine-checkable evaluations for agents.
+
+I am especially excited that the role treats data quality and evaluation design as research rather than plumbing. In scientific AI, a large dataset is not automatically useful: molecular identity, experimental conditions, provenance, licensing, coverage, leakage, and the relationship between a benchmark and an actual scientific decision all matter. I would enjoy working directly with computational and experimental scientists to make those judgments explicit, encode them in versioned pipelines and benchmarks, inspect model failures, and then close the loop into training.
+
+How did you learn about Periodic Labs?
+
+[CONFIRM BEFORE SUBMISSION: select Social Media, News Article, Friends, At Work, or Podcast.]
+
+Please name 1-3 examples of outstanding work you've done.
+
+1. I built Bazaar_ML, a simulator-first ML and RL environment that ingests versioned public source data, compiles heterogeneous mechanics into executable records, simulates complete trajectories, emits deterministic traces, and exposes training hooks. I designed its machine-readable certification and provenance layer. The current committed matrix contains 49,248 cases, 99.85% executable sampling-pool coverage, explicit parser/content hashes and unsupported primitives, and zero recorded execution failures. The important part is not the game domain; it is the discipline of making a complex environment measurable, replayable, and honest about unsupported behavior.
+
+2. For FirstProof Problem 9, I built and operated a multi-agent workflow that found an informal solution and then formalized it in Lean 4. Lean compilation provided a hard evaluator rather than relying on an LLM to grade another LLM. The result was the only formalized solution to a FirstProof problem reported at the time, and Daniel Litt described it as the "gold standard of LLM-aided mathematics." I subsequently co-authored multiple merged proofs in the PNT+ project.
+
+3. My chemistry BSc thesis evaluated and optimized graph neural networks for NMR prediction. I cleaned and structured molecular/NMR data, trained models on HPC, compared architectures and outcomes, and iterated from hypotheses rather than treating the model as a black box. That work taught me how easily scientific conclusions can be limited by identifiers, dataset construction, experimental context, and evaluation design.
+
+Tell us about a project you've worked on using LLMs or other AI tools.
+
+For FirstProof Problem 9, I treated LLMs as fallible research workers inside a verified workflow. Separate agents explored the literature and candidate proof strategies, attacked assumptions, rewrote weak arguments, and translated the result into Lean 4. I did not use model confidence as the acceptance criterion: every formal step had to compile against a pinned Lean/mathlib environment, and failed attempts became concrete feedback for the next iteration.
+
+The central engineering problem was orchestration. Long mathematical tasks cause models to lose invariants, silently weaken statements, invent library lemmas, or declare success before the proof closes. I decomposed the work into inspectable subproblems, kept the problem statement and dependency boundaries explicit, used independent critique, and made the Lean compiler the final evaluator. The workflow produced both an informal solution and a machine-checked formalization, while preserving enough structure to reproduce and audit the result.
+
+That project changed how I think about scientific agents. The useful unit is not a single impressive completion; it is a closed loop of hypothesis, artifact, external check, failure classification, and targeted retry.
+
+Please name 5 different mistakes generative AI has made in your interactions with it.
+
+1. Inventing a plausible Lean theorem name or namespace. The proposed proof reads correctly but fails immediately because the cited API does not exist in the pinned mathlib version.
+
+2. Proving a nearby but weaker statement. During proof repair, a model may add an assumption, reverse a quantifier dependency, or change strict inequality to non-strict inequality and then report the original goal as solved.
+
+3. Claiming formal verification while leaving a placeholder outside the file being discussed. I have seen agents focus on the local theorem while a transitive bridge still contains an admit/sorry, so "it compiles" is not the same as "the dependency closure is complete."
+
+4. Guessing semantics from natural-language descriptions. In simulator work, models confidently assign the wrong trigger timing, scope, or duration to a mechanic. I therefore keep unknowns explicit and require structured source data or a probe before implementation.
+
+5. Collapsing distinct chemical entities. Models can treat a name, SMILES, tautomer, stereoisomer, salt, or isotope as interchangeable, or merge database records without preserving provenance. That can silently corrupt a molecular dataset even when every row looks syntactically valid.
+
+Please provide concrete examples of how LLMs can accelerate science in your domain of scientific expertise. Be as specific as possible.
+
+My scientific domain is chemistry, especially molecular data and spectroscopy, with a second focus on formal mathematics.
+
+For NMR prediction, an LLM agent can audit a molecular dataset before training: resolve names and registry identifiers to structures; flag conflicting SMILES/InChI records; separate salts, stereoisomers, and tautomers; extract solvent, field strength, temperature, and reference-standard metadata from papers or instrument exports; and produce a provenance report for every transformation. It can then generate controlled experiment plans - for example, scaffold-split versus random-split evaluation, per-nucleus and per-functional-group error analysis, uncertainty calibration, and ablations of message-passing depth or molecular descriptors. The model should not decide correctness itself; scripts, cheminformatics toolkits, held-out data, and expert review provide the checks.
+
+For laboratory workflows, agents can translate heterogeneous instrument files, ELN entries, and protocol text into a versioned schema; detect missing units or impossible values; link samples to batches and calibration runs; and surface clusters of failures for a scientist to inspect. This reduces the time between an experiment and a training-ready, traceable dataset.
+
+For formal mathematics, LLMs can search for candidate lemmas, propose decompositions, translate arguments into Lean, and generate adversarial counterexample searches. Lean then turns correctness into an executable evaluation. Failed proofs are useful structured data: the goal state, attempted tactic, dependency version, and compiler error can train or evaluate the next system.
+
+Can you work out of our office in Menlo Park, CA weekly?
+
+[CONFIRM BEFORE SUBMISSION: Yes or No. This implies relocation or a workable weekly travel plan.]
+
+Will you now or in the future need sponsorship to work for any employer in the US?
+
+[CONFIRM BEFORE SUBMISSION: Yes or No. Do not infer an immigration answer from residence alone.]
+
+FINAL REVIEW CHECKLIST
+
+- Confirm how you learned about Periodic Labs.
+- Confirm Menlo Park weekly-office availability and relocation intent.
+- Confirm the US work-authorization/sponsorship answer.
+- Confirm the SoundImports employment date and replace "Present" with an exact range if desired.
+- Verify the private Bazaar_ML metrics are appropriate to disclose.
+- Upload SimpleCV/CV.pdf and proofread the Ashby autofill.

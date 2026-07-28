@@ -1,429 +1,432 @@
-import markdown
-import os
-import subprocess
-import shutil
-from pypdf import PdfReader, PdfWriter
+"""Generate Tom de Groot's one-page CV as PDF and PNG.
 
-def generate_cv():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    md_file = os.path.join(base_dir, 'CV.md')
-    html_file = os.path.join(base_dir, 'CV.html')
-    pdf_file = os.path.join(base_dir, 'CV.pdf')
-    png_file = os.path.join(base_dir, 'CV.png')
+The generator intentionally keeps no HTML or Markdown intermediate files.
+Run from any directory with:
 
-    # Modern CSS with Grid - Clean & Professional
-    css = """
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    * { box-sizing: border-box; }
+    python SimpleCV/generate_cv.py
+"""
 
-    body {
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-        color: #334155;
-        font-size: 12.8px;
-        line-height: 1.42;
-        width: 210mm;
-        height: 296mm;
-        overflow: hidden;
-    }
-    
-    .page-container {
-        display: grid;
-        grid-template-columns: 70mm 1fr;
-        height: 296mm;
-        width: 210mm;
-    }
+from __future__ import annotations
 
-    .sidebar {
-        background-color: #f8fafc;
-        color: #334155;
-        padding: 12px 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        border-right: 1px solid #e2e8f0;
-    }
+from pathlib import Path
 
-    .profile-pic-container {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        border: 3px solid #fff;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin: 0 auto;
-    }
+import fitz
+from pypdf import PdfReader
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    HRFlowable,
+    KeepTogether,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
-    .profile-pic {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
 
-    .contact-section h1 {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e293b;
-        margin: 0 0 6px 0;
-        text-align: center;
-        letter-spacing: -0.5px;
-        line-height: 1.1;
-    }
+BASE_DIR = Path(__file__).resolve().parent
+PDF_PATH = BASE_DIR / "CV.pdf"
+PNG_PATH = BASE_DIR / "CV.png"
 
-    .subtitle {
-        text-align: center;
-        color: #2563eb;
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        font-size: 13px;
-        line-height: 1.25;
-    }
+NAVY = colors.HexColor("#0F172A")
+SLATE = colors.HexColor("#334155")
+MUTED = colors.HexColor("#64748B")
+ACCENT = colors.HexColor("#0F766E")
+RULE = colors.HexColor("#CBD5E1")
+PALE = colors.HexColor("#F0FDFA")
 
-    .contact-details {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        font-size: 11px;
-    }
 
-    .contact-details p { margin: 0; display: flex; align-items: center; gap: 8px; }
-    .contact-details a { 
-        color: #475569; 
-        text-decoration: none; 
-        font-weight: 500;
-        border-bottom: 1px dotted #94a3b8;
-    }
-
-    .section-title {
-        font-size: 12.5px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #64748b;
-        font-weight: 700;
-        border-bottom: 2px solid #cbd5e1;
-        padding-bottom: 4px;
-        margin-bottom: 8px;
-    }
-
-    .main-content {
-        padding: 28px 28px 8px 28px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .main-section {
-        margin-bottom: 6px;
-    }
-    
-    .main-title {
-        font-size: 15.5px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 3px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 2px;
-    }
-
-    .about-text {
-        text-align: left;
-        margin-bottom: 2px;
-        color: #334155;
-        text-align: justify;
+def _styles() -> dict[str, ParagraphStyle]:
+    base = getSampleStyleSheet()
+    return {
+        "name": ParagraphStyle(
+            "Name",
+            parent=base["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=27,
+            leading=29,
+            textColor=NAVY,
+            alignment=TA_CENTER,
+            spaceAfter=1.5,
+        ),
+        "headline": ParagraphStyle(
+            "Headline",
+            parent=base["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=11,
+            leading=13,
+            textColor=ACCENT,
+            alignment=TA_CENTER,
+            spaceAfter=2,
+        ),
+        "contact": ParagraphStyle(
+            "Contact",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=8.4,
+            leading=10,
+            textColor=SLATE,
+            alignment=TA_CENTER,
+            spaceAfter=3,
+        ),
+        "section": ParagraphStyle(
+            "Section",
+            parent=base["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=10.1,
+            leading=11.8,
+            textColor=ACCENT,
+            spaceBefore=4.5,
+            spaceAfter=2,
+            uppercase=True,
+        ),
+        "summary": ParagraphStyle(
+            "Summary",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=9.15,
+            leading=11.5,
+            textColor=SLATE,
+            alignment=TA_LEFT,
+            spaceAfter=1,
+        ),
+        "item_title": ParagraphStyle(
+            "ItemTitle",
+            parent=base["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=9.7,
+            leading=11.5,
+            textColor=NAVY,
+        ),
+        "item_meta": ParagraphStyle(
+            "ItemMeta",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=8.35,
+            leading=10.2,
+            textColor=MUTED,
+            alignment=TA_RIGHT,
+        ),
+        "bullet": ParagraphStyle(
+            "Bullet",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=8.85,
+            leading=11,
+            textColor=SLATE,
+            leftIndent=8,
+            firstLineIndent=-6,
+            bulletIndent=0,
+            spaceAfter=0.9,
+        ),
+        "compact": ParagraphStyle(
+            "Compact",
+            parent=base["Normal"],
+            fontName="Helvetica",
+            fontSize=8.7,
+            leading=10.8,
+            textColor=SLATE,
+            spaceAfter=0.8,
+        ),
     }
 
-    .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 1px;
-    }
 
-    .item-title {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 14px;
-    }
-
-    .item-date {
-        color: #64748b;
-        font-size: 10.5px;
-        font-weight: 500;
-        white-space: nowrap; 
-        background: #f1f5f9;
-        padding: 1.5px 6px;
-        border-radius: 4px;
-    }
-
-    .item-desc {
-        color: #475569;
-        font-size: 12.2px;
-        margin: 0 0 1px 0;
-        line-height: 1.45;
-    }
-    
-    .link-style {
-        color: #2563eb;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .skills-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    .skill-category {
-        font-size: 11.5px;
-        line-height: 1.3;
-    }
-    .skill-category strong { color: #0f172a; font-weight: 600; }
-
-    @media print {
-        @page { margin: 0; }
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
-    """
-
-    full_html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Tom de Groot - CV</title>
-        <style>{css}</style>
-    </head>
-    <body>
-        <div class="page-container">
-            <!-- SIDEBAR -->
-            <div class="sidebar">
-                <div class="profile-pic-container">
-                    <img src="Profile_pic.jpg" class="profile-pic" alt="Profile">
-                </div>
-                
-                <div class="contact-section">
-                    <h1>Tom de Groot</h1>
-                    <span class="subtitle">Frontier Evaluation &<br>Formal Verification</span>
-                    
-                    <div class="contact-details">
-                        <p>Grijpskerk, NL</p>
-                        <p><a href="tel:+31631490416">+31 6 314 90 416</a></p>
-                        <p><a href="mailto:tomthegreatest04@gmail.com">tomthegreatest04@gmail.com</a></p>
-                        <p><a href="https://github.com/Tomodovodoo">github.com/Tomodovodoo</a></p>
-                        <p><a href="https://x.com/Tomodovodoo">x.com/Tomodovodoo</a></p>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-title">Technical Stack</div>
-                    <div class="skills-grid">
-                        <div class="skill-category"><strong>ML/Agents:</strong> TensorFlow, n8n, OpenClaw, Slurm</div>
-                        <div class="skill-category"><strong>Formal:</strong> Lean 4, mathlib, Lake, CI/CD for proofs, auto-formalization.</div>
-                        <div class="skill-category"><strong>Tools:</strong> Git, GitHub, Linux/HPC, VS Code, Docker, Numba/Njit</div>
-                        <div class="skill-category"><strong>Software Languages:</strong> Python, Lean.</div>
-                        <div class="skill-category"><strong>Spoken Languages:</strong> Dutch, English.</div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-title">Education</div>
-                    <div class="job-item" style="margin-bottom: 8px;">
-                        <div class="item-title">BSc Chemistry</div>
-                        <div class="item-desc" style="margin-bottom:0;">University of Groningen</div>
-                        <div class="item-desc" style="font-size: 10.5px; color:#64748b; margin-bottom:0;">2021 - 2025</div>
-                        <div class="item-desc" style="font-style: italic; font-size: 10.5px; margin-bottom: 2px;">Track: Chemistry of Life</div>
-                        <div class="item-desc" style="font-size: 10px; line-height: 1.2; color:#334155;">
-                            <strong>Thesis:</strong> Evaluating and Optimizing NMR Prediction with Graph Neural Networks<br>(Chem-AI)
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="section-title">Awards</div>
-                    <div class="job-item" style="margin-bottom: 5px;">
-                        <div class="item-title" style="font-size: 11px;"><a href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" class="link-style">Chess.com Member of the Year 2021</a></div>
-                    </div>
-                    <div class="job-item">
-                        <div class="item-title" style="font-size: 11px;"><a href="https://harmonic.fun/news#blog-post-mathematician-sponsorships" class="link-style">Harmonic Rising Mathematician Grant</a></div>
-                        <div class="item-desc" style="font-size: 10px;">(Details on request)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="main-content">
-                <div class="main-section">
-                    <div class="main-title">About Me</div>
-                    <div class="about-text">
-                        Hi, I'm Tom. I'm a BSc Chemistry graduate from the University of Groningen (Life Sciences track). 
-                        My thesis in the Pollice Group focused on optimizing NMR prediction with GNNs. 
-                        Post-graduation, I pivoted to mathematics and formal methods, becoming an active contributor to the <strong>PNT+</strong> Lean formalization project. 
-                        I've built a strong foundation in student mathematics and programming, which I use to design and evaluate AI systems, their output, and create frameworks for them.
-                    </div>
-                    <div class="about-text" style="margin-top: 4px;">
-                        <strong>Goals!</strong> Focusing on frontier model capability work, stress-testing, and evaluation design. 
-                        My current goal is to use agentic systems and formal verification (Lean 4) to contribute to open science in mathematics.
-                    </div>
-                </div>
-
-                <div class="main-section">
-                    <div class="main-title">Selected Research & Formalization</div>
-                    
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">Prime Number Theorem And (PNT+)</span>
-                            <span class="item-date">Late 2025 - Present</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 3px;">
-                            Active contributor to the Lean 4 formalization project led by Alex Kontorovich and Terence Tao. 
-                            Using an AI system called Aristotle, I have formalized multiple intermediate theorems, and I am a recent maintainer of the Aristotle branch alongside Pietro Monticone.
-                        </p>
-                        <p class="item-desc">
-                            My current focus herein is the scaling up of Aristotle and other agentic systems to formalize more mathematics.
-                            <a href="https://github.com/AlexKontorovich/PrimeNumberTheoremAnd/pulls?q=is%3Apr+author%3ATomodovodoo" class="link-style">Merged PRs</a>
-                        </p>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">First Proof Problem 9 (Lean-verified Solution)</span>
-                            <span class="item-date">Feb 2026</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 3px;">
-                            Produced the only credible formalized solution during the 7 day challenge, recognized by among others <strong>Kevin Buzzard</strong> and <strong>Daniel Litt</strong>, who gave it the context of "gold standard of LLM-aided mathematics." 
-                            Created an autonomous agent that worked on the informal proof, and orchestrated multiple LLM agents to formalize it in Lean 4.
-                            <a href="https://github.com/Tomodovodoo/firstproof" class="link-style">View Repository</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="main-section">
-                    <div class="main-title">Engineering Projects</div>
-                    <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">BaanSolliciteren (Agentic Job Automation)</span>
-                        </div>
-                        <p class="item-desc" style="margin-bottom: 4px;">
-                            Engineered a semi-agentic system to automate my job search and its documentation. Built a custom <strong>Gmail MCP server</strong> (Model Context Protocol) to enable real-time status tracking and ranking of vacancies.
-                        </p>
-                        <p class="item-desc">
-                            Implemented HTML-to-JSON schema parsing and automated LLM-based fit-scoring. Developed logic to cross-reference vacancy descriptions against personal descriptors, significantly reducing manual review time.
-                        </p>
-                    </div>
-                    
-                     <div class="project-item">
-                        <div class="item-header">
-                            <span class="item-title">Technical Collection & Visualizations</span>
-                        </div>
-                        <p class="item-desc">
-                           Multi-year repository of technical interests and explorations: including from-scratch audio-to-text implementations and interactive visualizations of high-dimensional datasets (e.g., vaccine distribution and water quality metrics). Focused on extracting insights from real-world data.
-                           <a href="https://github.com/Tomodovodoo/Collection-of-Projects" class="link-style">GitHub</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div class="main-section">
-                    <div class="main-title">Professional Experience</div>
-                    
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Transcom (for Odido)</span>
-                            <span class="item-date">2024</span>
-                        </div>
-                        <p class="item-desc">Demonstrated reliable performance in customer service, maintaining consistent top-tier customer satisfaction ratings and learning to explain at every level.</p>
-                    </div>
-
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Teamspot (Regional Director)</span>
-                            <span class="item-date">2022 - 2024</span>
-                        </div>
-                        <p class="item-desc">Coordinated regional school projects and taught teachers, performed technical testing/data entry within an Agile/Jira environment, alongside in-depth bug testing and general responsibilities.</p>
-                    </div>
-
-                    <div class="job-item">
-                        <div class="item-header">
-                            <span class="item-title">Chess.com</span>
-                            <span class="item-date">2022</span>
-                        </div>
-                        <p class="item-desc">Moderated and proctored international chess events; recognized as <strong>Member of the Year 2021</strong> for community ownership and chess coaching.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-
-    # Write HTML
-    with open(html_file, 'w', encoding='utf-8') as f:
-        f.write(full_html)
-    print(f"Generated {html_file}")
-
-    # Find Browser (Edge is standard on Windows)
-    edge_paths = [
-        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+def _section(title: str, styles: dict[str, ParagraphStyle]) -> list:
+    return [
+        Paragraph(title.upper(), styles["section"]),
+        HRFlowable(
+            width="100%",
+            thickness=0.65,
+            color=RULE,
+            spaceBefore=0,
+            spaceAfter=3,
+        ),
     ]
-    browser_exe = None
-    for path in edge_paths:
-        if os.path.exists(path):
-            browser_exe = path
-            break
-    
-    if not browser_exe:
-        print("Error: Could not find Microsoft Edge executable.")
-        return
 
-    # Generate PDF
-    print(f"Generating PDF using {browser_exe}...")
-    subprocess.run([
-        browser_exe,
-        "--headless",
-        "--print-to-pdf=" + pdf_file,
-        "--no-pdf-header-footer",
-        html_file
-    ], check=True, shell=True)
-    
-    # Post-process to ensure single page
-    print("Post-processing PDF to strict 1-page limit...")
-    try:
-        reader = PdfReader(pdf_file)
-        if len(reader.pages) > 1:
-            print(f"PDF has {len(reader.pages)} pages. Trimming to 1 page...")
-            writer = PdfWriter()
-            writer.add_page(reader.pages[0])
-            with open(pdf_file, "wb") as f:
-                writer.write(f)
-            print("Trimmed to single page.")
-        else:
-            print("PDF is already 1 page.")
-    except Exception as e:
-        print(f"Warning: Could not trim PDF: {e}")
 
-    print(f"Generated {pdf_file}")
+def _item_header(
+    title: str,
+    meta: str,
+    styles: dict[str, ParagraphStyle],
+) -> Table:
+    table = Table(
+        [
+            [
+                Paragraph(title, styles["item_title"]),
+                Paragraph(meta, styles["item_meta"]),
+            ]
+        ],
+        colWidths=[138 * mm, 40 * mm],
+        hAlign="LEFT",
+    )
+    table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0.4),
+            ]
+        )
+    )
+    return table
 
-    # Generate Screenshot (PNG)
-    # Dimensions for Sidebar layout: Keep consistent
-    print(f"Generating PNG preview...")
-    subprocess.run([
-        browser_exe,
-        "--headless",
-        "--screenshot=" + png_file,
-        "--window-size=794,1123", 
-        "--force-device-scale-factor=2",
-        html_file
-    ], check=True, shell=True)
-    print(f"Generated {png_file}")
+
+def _bullet(text: str, styles: dict[str, ParagraphStyle]) -> Paragraph:
+    return Paragraph(f"&bull;&nbsp; {text}", styles["bullet"])
+
+
+def _project(
+    title: str,
+    meta: str,
+    bullets: list[str],
+    styles: dict[str, ParagraphStyle],
+) -> KeepTogether:
+    flowables = [_item_header(title, meta, styles)]
+    flowables.extend(_bullet(text, styles) for text in bullets)
+    flowables.append(Spacer(1, 2))
+    return KeepTogether(flowables)
+
+
+def _on_page(canvas, doc) -> None:
+    canvas.saveState()
+    canvas.setTitle("Tom de Groot - Scientific AI, Evaluation and Data")
+    canvas.setAuthor("Tom de Groot")
+    canvas.setSubject("Resume tailored to scientific AI evaluation and data roles")
+    canvas.setStrokeColor(ACCENT)
+    canvas.setLineWidth(2.2)
+    canvas.line(doc.leftMargin, A4[1] - 7 * mm, A4[0] - doc.rightMargin, A4[1] - 7 * mm)
+    canvas.setFillColor(MUTED)
+    canvas.setFont("Helvetica", 6.5)
+    canvas.drawRightString(
+        A4[0] - doc.rightMargin,
+        6.5 * mm,
+        "GitHub: Tomodovodoo",
+    )
+    canvas.restoreState()
+
+
+def build_pdf() -> None:
+    styles = _styles()
+    doc = SimpleDocTemplate(
+        str(PDF_PATH),
+        pagesize=A4,
+        leftMargin=16 * mm,
+        rightMargin=16 * mm,
+        topMargin=10.5 * mm,
+        bottomMargin=10 * mm,
+        title="Tom de Groot - Scientific AI, Evaluation and Data",
+        author="Tom de Groot",
+        subject="Resume tailored to scientific AI evaluation and data roles",
+    )
+
+    story = [
+        Paragraph("Tom de Groot", styles["name"]),
+        Paragraph(
+            "AI Engineer | Scientific AI, Evaluation &amp; Data",
+            styles["headline"],
+        ),
+        Paragraph(
+            "Groningen, Netherlands &nbsp;|&nbsp; +31 6 314 90 416 "
+            "&nbsp;|&nbsp; "
+            '<link href="mailto:tomthegreatest04@gmail.com" '
+            'color="#334155">tomthegreatest04@gmail.com</link>'
+            "<br/>"
+            '<link href="https://github.com/Tomodovodoo" '
+            'color="#0F766E">github.com/Tomodovodoo</link>'
+            "&nbsp;|&nbsp;"
+            '<link href="https://linkedin.com/in/tomodovodoo" '
+            'color="#0F766E">linkedin.com/in/tomodovodoo</link>'
+            "&nbsp;|&nbsp;"
+            '<link href="https://x.com/Tomodovodoo" '
+            'color="#0F766E">x.com/Tomodovodoo</link>',
+            styles["contact"],
+        ),
+    ]
+
+    story.extend(_section("Profile", styles))
+    story.append(
+        Paragraph(
+            "AI engineer and chemistry-trained researcher building evaluation, "
+            "data, and agentic systems. Production work spans prediction "
+            "algorithms, AI automation, AWS/container deployment, and full-stack "
+            "applications. Research includes GNN-based NMR prediction, molecular "
+            "data cleaning, HPC training, and controlled model evaluation. "
+            "Open-source work combines simulator-first RL infrastructure with "
+            "Lean-verified evaluation of LLM-generated mathematics.",
+            styles["summary"],
+        )
+    )
+
+    story.extend(_section("Experience", styles))
+    story.append(
+        _project(
+            "AI Engineer - SoundImports",
+            "Present",
+            [
+                "Develop prediction algorithms and AI automations; deploy "
+                "containerized services on AWS and build full-stack applications.",
+                "Work across data, model, API, and deployment layers to turn "
+                "operational workflows into reliable production systems.",
+            ],
+            styles,
+        )
+    )
+    story.append(
+        _project(
+            "Chemistry Research - University of Groningen, Pollice Group",
+            "2024 - 2025",
+            [
+                "<b>BSc thesis:</b> Evaluating and Optimizing NMR Prediction "
+                "with Graph Neural Networks.",
+                "Curated molecular/NMR data and ran controlled GNN experiments "
+                "on HPC, comparing architectures and model outcomes through a "
+                "hypothesis-test-measure-iterate workflow.",
+            ],
+            styles,
+        )
+    )
+    story.append(
+        _project(
+            "Regional Director / QA - Teamspot",
+            "2022 - 2024",
+            [
+                "Coordinated regional school projects, trained users, and "
+                "bug-tested web, app, API, and integration workflows in Jira.",
+            ],
+            styles,
+        )
+    )
+
+    story.extend(_section("Selected Evaluation, Data & AI Work", styles))
+    story.append(
+        _project(
+            "Bazaar_ML - Simulator, Certification & RL Environment",
+            "2026 - Present",
+            [
+                "Built a simulator-first ML stack that ingests versioned public "
+                "data, compiles heterogeneous mechanics into executable records, "
+                "emits deterministic traces, and exposes agent-training hooks.",
+                "Designed schema-frozen certification and provenance. The current "
+                "committed matrix contains <b>49,248 cases</b>, <b>99.85%</b> "
+                "executable sampling-pool coverage, content/parser hashes, explicit "
+                "unsupported primitives, and zero recorded execution failures.",
+            ],
+            styles,
+        )
+    )
+    story.append(
+        _project(
+            "LLM-Aided Formal Mathematics - Lean 4",
+            "2025 - Present",
+            [
+                "Orchestrated multiple agents to solve FirstProof Problem 9 "
+                "informally and formalize it in Lean; the repository pins a "
+                "reproducible toolchain and contains the only solved problem in "
+                "that workspace.",
+                "Co-authored multiple merged PNT+ proofs and use Lean compilation, "
+                "tests, and adversarial review as hard evaluations for model output.",
+            ],
+            styles,
+        )
+    )
+    story.append(
+        _project(
+            "BaanSoliciteren - Agentic Data Pipeline",
+            "2025 - 2026",
+            [
+                "Built a Python/Gmail MCP workflow to ingest vacancy pages and "
+                "email, normalize them into JSON, score fit, track state, and "
+                "archive outcomes with a reproducible audit trail.",
+            ],
+            styles,
+        )
+    )
+
+    story.extend(_section("Education & Recognition", styles))
+    story.append(
+        Paragraph(
+            "<b>BSc Chemistry, University of Groningen</b> - Chemistry of Life "
+            "track, 2021 - 2025 &nbsp;|&nbsp; "
+            "<b>Harmonic Rising Mathematician Award</b>, 2026 &nbsp;|&nbsp; "
+            "<b>Chess.com Member of the Year</b>, 2021",
+            styles["compact"],
+        )
+    )
+
+    story.extend(_section("Technical Skills", styles))
+    story.extend(
+        [
+            Paragraph(
+                "<b>Evaluation &amp; data:</b> benchmark/certification design, "
+                "data quality and provenance, dataset versioning, deterministic "
+                "replay, failure analysis, scientific experimentation",
+                styles["compact"],
+            ),
+            Paragraph(
+                "<b>AI &amp; engineering:</b> Python, PyTorch, TensorFlow, "
+                "scikit-learn, pandas, NumPy, SQL, RDKit, JavaScript, APIs, AWS, "
+                "Docker, Linux/HPC, Git",
+                styles["compact"],
+            ),
+            Paragraph(
+                "<b>Formal methods:</b> Lean 4, mathlib, Lake, CI &nbsp;|&nbsp; "
+                "<b>Science:</b> analytical chemistry, biochemistry, NMR, BSL-2, "
+                "molecular data &nbsp;|&nbsp; "
+                "<b>Languages:</b> Dutch (native), English (fluent)",
+                styles["compact"],
+            ),
+        ]
+    )
+
+    doc.build(story, onFirstPage=_on_page, onLaterPages=_on_page)
+
+
+def render_png() -> None:
+    with fitz.open(PDF_PATH) as document:
+        if document.page_count != 1:
+            raise RuntimeError(
+                f"Expected a one-page CV, generated {document.page_count} pages."
+            )
+        page = document[0]
+        pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+        pixmap.save(PNG_PATH)
+
+
+def validate_outputs() -> None:
+    reader = PdfReader(str(PDF_PATH))
+    if len(reader.pages) != 1:
+        raise RuntimeError(f"Expected one PDF page, found {len(reader.pages)}.")
+
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    required_phrases = (
+        "Tom de Groot",
+        "Scientific AI",
+        "49,248 cases",
+        "Graph Neural Networks",
+        "Lean 4",
+        "SoundImports",
+    )
+    missing = [phrase for phrase in required_phrases if phrase not in text]
+    if missing:
+        raise RuntimeError(f"Generated PDF is missing required text: {missing}")
+
+    if not PNG_PATH.exists() or PNG_PATH.stat().st_size == 0:
+        raise RuntimeError("PNG preview was not generated.")
+
+
+def generate_cv() -> None:
+    build_pdf()
+    render_png()
+    validate_outputs()
+    print(f"Generated {PDF_PATH}")
+    print(f"Generated {PNG_PATH}")
+
 
 if __name__ == "__main__":
     generate_cv()
