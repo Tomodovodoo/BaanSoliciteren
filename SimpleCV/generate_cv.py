@@ -43,6 +43,8 @@ BLUE = colors.HexColor("#245BFF")
 SIDEBAR_BG = colors.HexColor("#F8FAFC")
 RULE = colors.HexColor("#CBD5E1")
 DATE_BG = colors.HexColor("#F1F5F9")
+CALLOUT_BG = colors.HexColor("#EEF4FF")
+CALLOUT_BORDER = colors.HexColor("#BFD0FF")
 WHITE = colors.white
 
 
@@ -99,32 +101,64 @@ def _styles() -> dict[str, ParagraphStyle]:
         "main_heading": ParagraphStyle(
             "MainHeading",
             fontName="Helvetica-Bold",
-            fontSize=12,
-            leading=13.4,
+            fontSize=11.2,
+            leading=12.6,
             textColor=NAVY,
             alignment=TA_LEFT,
         ),
-        "main_body": ParagraphStyle(
-            "MainBody",
+        "hero_title": ParagraphStyle(
+            "HeroTitle",
+            fontName="Helvetica-Bold",
+            fontSize=16,
+            leading=18,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "hero_kicker": ParagraphStyle(
+            "HeroKicker",
+            fontName="Helvetica-Bold",
+            fontSize=8.7,
+            leading=10.5,
+            textColor=BLUE,
+            alignment=TA_LEFT,
+        ),
+        "hero_body": ParagraphStyle(
+            "HeroBody",
             fontName="Helvetica",
-            fontSize=9.15,
-            leading=11.7,
+            fontSize=10.2,
+            leading=13.2,
             textColor=TEXT,
+            alignment=TA_LEFT,
+        ),
+        "quote": ParagraphStyle(
+            "Quote",
+            fontName="Helvetica-Bold",
+            fontSize=11.2,
+            leading=13.8,
+            textColor=NAVY,
+            alignment=TA_LEFT,
+        ),
+        "quote_attribution": ParagraphStyle(
+            "QuoteAttribution",
+            fontName="Helvetica",
+            fontSize=8.2,
+            leading=10,
+            textColor=MUTED,
             alignment=TA_LEFT,
         ),
         "item_title": ParagraphStyle(
             "ItemTitle",
             fontName="Helvetica-Bold",
-            fontSize=10.2,
-            leading=11.7,
+            fontSize=10.4,
+            leading=12,
             textColor=NAVY,
             alignment=TA_LEFT,
         ),
         "item_body": ParagraphStyle(
             "ItemBody",
             fontName="Helvetica",
-            fontSize=8.95,
-            leading=11.35,
+            fontSize=9.15,
+            leading=11.8,
             textColor=TEXT,
             alignment=TA_LEFT,
         ),
@@ -205,6 +239,49 @@ def _draw_date_pill(
     pdf.setFont(font_name, font_size)
     pdf.drawCentredString(x + width / 2, y + 3.1, label)
     return width
+
+
+def _draw_callout(
+    pdf: canvas.Canvas,
+    quote: str,
+    attribution: str,
+    y_top: float,
+    styles: dict[str, ParagraphStyle],
+) -> float:
+    padding_x = 9
+    padding_y = 7
+    inner_width = MAIN_WIDTH - 2 * padding_x
+    quote_paragraph = Paragraph(quote, styles["quote"])
+    attribution_paragraph = Paragraph(attribution, styles["quote_attribution"])
+    _, quote_height = quote_paragraph.wrap(inner_width, PAGE_HEIGHT)
+    _, attribution_height = attribution_paragraph.wrap(inner_width, PAGE_HEIGHT)
+    height = 2 * padding_y + quote_height + attribution_height + 3
+    y_bottom = y_top - height
+
+    pdf.setFillColor(CALLOUT_BG)
+    pdf.setStrokeColor(CALLOUT_BORDER)
+    pdf.setLineWidth(0.7)
+    pdf.roundRect(
+        MAIN_X,
+        y_bottom,
+        MAIN_WIDTH,
+        height,
+        5,
+        fill=1,
+        stroke=1,
+    )
+    quote_y = y_top - padding_y
+    quote_paragraph.drawOn(
+        pdf,
+        MAIN_X + padding_x,
+        quote_y - quote_height,
+    )
+    attribution_paragraph.drawOn(
+        pdf,
+        MAIN_X + padding_x,
+        quote_y - quote_height - 3 - attribution_height,
+    )
+    return y_bottom - 9
 
 
 def _draw_item(
@@ -295,7 +372,7 @@ def _draw_sidebar(
     y -= 4
     y = _draw_paragraph(
         pdf,
-        "Chemistry - Math - AI",
+        "Independent Researcher<br/>AI for Math &amp; Science",
         styles["subtitle"],
         x,
         y,
@@ -304,12 +381,13 @@ def _draw_sidebar(
     y -= 7
 
     contact_lines = [
-        "Grijpskerk, NL",
-        '<link href="tel:+31631490416" color="#334155">+31 6 314 90 416</link>',
+        "Grijpskerk, NL  |  +31 6 314 90 416",
         '<link href="mailto:tomthegreatest04@gmail.com" '
         'color="#334155">tomthegreatest04@gmail.com</link>',
         '<link href="https://github.com/Tomodovodoo" '
         'color="#334155">github.com/Tomodovodoo</link>',
+        '<link href="https://x.com/Tomodovodoo" '
+        'color="#334155">x.com/Tomodovodoo</link>',
         '<link href="https://linkedin.com/in/tomodovodoo" '
         'color="#334155">linkedin.com/in/tomodovodoo</link>',
     ]
@@ -318,16 +396,12 @@ def _draw_sidebar(
         y -= 1.2
 
     y -= 6
-    y = _draw_sidebar_heading(pdf, "Technical Stack", y, styles)
+    y = _draw_sidebar_heading(pdf, "Methods & Tools", y, styles)
     skill_groups = [
-        "<b>AI/Evaluation:</b> PyTorch, TensorFlow, agentic workflows, "
-        "RL environments, benchmark design",
-        "<b>Data:</b> pandas, NumPy, SQL, RDKit, scientific data quality, "
-        "provenance, versioning",
-        "<b>Formal:</b> Lean 4, mathlib, Lake, CI/CD for proofs",
-        "<b>Tools:</b> Git, AWS, Docker, Linux/HPC, APIs",
-        "<b>Languages:</b> Python, Lean, JavaScript<br/>"
-        "<b>Spoken:</b> Dutch, English",
+        "<b>Research:</b> agentic workflows, evaluations, formal verification",
+        "<b>Code:</b> Python, Lean 4, PyTorch, SQL, RDKit",
+        "<b>Systems:</b> Linux/HPC, AWS, Docker, Git",
+        "<b>Languages:</b> Dutch, English",
     ]
     for group in skill_groups:
         y = _draw_paragraph(
@@ -356,8 +430,7 @@ def _draw_sidebar(
     y -= 5
     y = _draw_paragraph(
         pdf,
-        "<b>Thesis:</b> Evaluating and Optimizing NMR Prediction with "
-        "Graph Neural Networks",
+        "<b>Thesis:</b> GNN evaluation for NMR prediction",
         styles["sidebar_small"],
         x,
         y,
@@ -365,11 +438,11 @@ def _draw_sidebar(
     )
 
     y -= 12
-    y = _draw_sidebar_heading(pdf, "Awards", y, styles)
+    y = _draw_sidebar_heading(pdf, "Recognition", y, styles)
     y = _draw_paragraph(
         pdf,
-        '<link href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" '
-        'color="#245BFF">Chess.com Member of the Year 2021</link>',
+        '<link href="https://harmonic.fun/news/mathematician-sponsorships/" '
+        'color="#245BFF">Harmonic Rising Mathematician</link>',
         styles["sidebar_body"],
         x,
         y,
@@ -378,8 +451,8 @@ def _draw_sidebar(
     y -= 6
     _draw_paragraph(
         pdf,
-        '<link href="https://harmonic.fun/news/mathematician-sponsorships/" '
-        'color="#245BFF">Harmonic Rising Mathematician Award</link>',
+        '<link href="https://www.chess.com/news/view/2021-chesscom-awards-winners#member" '
+        'color="#245BFF">Chess.com Member of the Year 2021</link>',
         styles["sidebar_body"],
         x,
         y,
@@ -393,15 +466,19 @@ def _draw_main(
 ) -> float:
     y = PAGE_HEIGHT - 9 * mm
 
-    y = _draw_main_heading(pdf, "About Me", y, styles)
     y = _draw_paragraph(
         pdf,
-        "AI engineer at <b>SoundImports</b> and BSc Chemistry graduate from "
-        "the University of Groningen. My thesis in the Pollice Group focused "
-        "on evaluating and optimizing graph neural networks for NMR prediction, "
-        "including molecular-data cleaning, HPC training, and controlled model "
-        "comparison.",
-        styles["main_body"],
+        "INDEPENDENT RESEARCHER",
+        styles["hero_title"],
+        MAIN_X,
+        y,
+        MAIN_WIDTH,
+    )
+    y -= 2
+    y = _draw_paragraph(
+        pdf,
+        "AI-ASSISTED MATHEMATICS  |  FORMAL VERIFICATION  |  SCIENTIFIC ML",
+        styles["hero_kicker"],
         MAIN_X,
         y,
         MAIN_WIDTH,
@@ -409,36 +486,80 @@ def _draw_main(
     y -= 4
     y = _draw_paragraph(
         pdf,
-        "I build scientific-AI and agentic systems around explicit data lineage, "
-        "reproducible environments, hard evaluations, and failure-driven "
-        "iteration - from production prediction systems to deterministic "
-        "simulators and Lean-verified mathematics.",
-        styles["main_body"],
+        "I use frontier models to attack open problems, then make the result "
+        "inspectable: expert review, formal proof, and reproducible code.",
+        styles["hero_body"],
         MAIN_X,
         y,
         MAIN_WIDTH,
     )
 
-    y -= 10
-    y = _draw_main_heading(
+    y -= 9
+    y = _draw_callout(
         pdf,
-        "Scientific AI, Evaluation & Data",
+        '&quot;the gold standard of LLM-aided mathematics&quot;',
+        '<link href="https://www.daniellitt.com/blog/2026/2/20/'
+        'mathematics-in-the-library-of-babel" color="#245BFF">'
+        "Daniel Litt</link> on Tom's Lean-verified FirstProof solution",
+        y,
+        styles,
+    )
+
+    y = _draw_main_heading(pdf, "Selected Research", y, styles)
+    y = _draw_item(
+        pdf,
+        "Daniel Litt Open Problem - Raynaud Bundles",
+        "Jul 2026",
+        [
+            "Steered GPT-5.5 Pro and GPT-5.6 Sol Pro from a partial result to a "
+            "complete candidate proof using Raynaud bundles. Now auditing the "
+            "argument with Daniel Litt's feedback. "
+            '<link href="https://x.com/Tomodovodoo/status/2076027408042573905" '
+            'color="#245BFF">Research note</link> | '
+            '<link href="https://problemsilike.com/forum/thread/14" '
+            'color="#245BFF">Proof thread</link>',
+        ],
         y,
         styles,
     )
     y = _draw_item(
         pdf,
-        "Bazaar_ML - Simulator, Certification & RL Environment",
+        "FirstProof Problem 9 - Lean-Verified",
+        "Feb 2026",
+        [
+            "Orchestrated LLM agents from informal search to Lean 4 verification. "
+            "The repository's only solved problem. "
+            '<link href="https://github.com/Tomodovodoo/firstproof" '
+            'color="#245BFF">Proof + code</link>',
+        ],
+        y,
+        styles,
+    )
+    y = _draw_item(
+        pdf,
+        "Prime Number Theorem And (PNT+)",
+        "2025 - Present",
+        [
+            "Contributed merged Lean proofs; use compilation and adversarial "
+            "review to test model-generated mathematics. "
+            '<link href="https://github.com/AlexKontorovich/'
+            'PrimeNumberTheoremAnd/pulls?q=is%3Apr+author%3ATomodovodoo" '
+            'color="#245BFF">Merged PRs</link>',
+        ],
+        y,
+        styles,
+    )
+
+    y -= 2
+    y = _draw_main_heading(pdf, "Scientific AI Systems", y, styles)
+    y = _draw_item(
+        pdf,
+        "Bazaar_ML - Simulator, Certification & RL",
         "2026 - Present",
         [
-            "Built a simulator-first ML stack that ingests versioned public "
-            "source data, compiles heterogeneous mechanics into executable "
-            "records, simulates complete trajectories, emits deterministic "
-            "traces, and exposes agent-training hooks.",
-            "Designed schema-frozen certification and provenance. The committed "
-            "matrix contains <b>49,248 cases</b>, <b>99.85%</b> executable "
-            "sampling-pool coverage, explicit parser/content hashes and "
-            "unsupported primitives, and zero recorded execution failures.",
+            "<b>49,248-case</b> executable certification matrix; <b>99.85%</b> "
+            "sampling-pool coverage; deterministic traces, provenance, and "
+            "agent-training hooks.",
         ],
         y,
         styles,
@@ -448,79 +569,22 @@ def _draw_main(
         "NMR Prediction with Graph Neural Networks",
         "2024 - 2025",
         [
-            "Curated molecular and NMR data and ran controlled GNN experiments "
-            "on HPC. Compared architectures and outcomes through a "
-            "hypothesis-test-measure-iterate workflow, with attention to "
-            "identifiers, scientific context, split design, and evaluation quality.",
+            "Curated molecular/NMR data and benchmarked GNNs on HPC under "
+            "controlled splits and evaluation.",
         ],
         y,
         styles,
     )
 
     y -= 2
-    y = _draw_main_heading(
-        pdf,
-        "Research & Formalization",
-        y,
-        styles,
-    )
-    y = _draw_item(
-        pdf,
-        "FirstProof Problem 9 - Lean-Verified Agent Workflow",
-        "Feb 2026",
-        [
-            "Orchestrated multiple LLM agents to find an informal solution and "
-            "formalize it in Lean 4. Lean compilation provided a hard evaluator "
-            "for every accepted step; the pinned workspace contains the only "
-            "solved problem in that repository. "
-            '<link href="https://github.com/Tomodovodoo/firstproof" '
-            'color="#245BFF">Repository</link>',
-        ],
-        y,
-        styles,
-    )
-    y = _draw_item(
-        pdf,
-        "Prime Number Theorem And (PNT+)",
-        "Late 2025 - Present",
-        [
-            "Co-authored multiple merged Lean proofs in the open-source PNT+ "
-            "project and use compilation, tests, and adversarial review to "
-            "evaluate model-generated mathematics. "
-            '<link href="https://github.com/AlexKontorovich/PrimeNumberTheoremAnd/pulls'
-            '?q=is%3Apr+author%3ATomodovodoo" color="#245BFF">Merged PRs</link>',
-        ],
-        y,
-        styles,
-    )
-
-    y -= 2
-    y = _draw_main_heading(pdf, "Engineering Projects", y, styles)
-    y = _draw_item(
-        pdf,
-        "BaanSoliciteren - Agentic Job Automation",
-        "2025 - 2026",
-        [
-            "Built a Python/Gmail MCP pipeline to ingest vacancy pages and "
-            "email, normalize them into JSON, score fit, track state, and "
-            "archive outcomes with an auditable workflow. "
-            '<link href="https://github.com/Tomodovodoo/BaanSoliciteren" '
-            'color="#245BFF">GitHub</link>',
-        ],
-        y,
-        styles,
-    )
-
-    y -= 1
-    y = _draw_main_heading(pdf, "Professional Experience", y, styles)
+    y = _draw_main_heading(pdf, "Engineering", y, styles)
     y = _draw_item(
         pdf,
         "AI Engineer - SoundImports",
         "Present",
         [
-            "Develop prediction algorithms and AI automations; deploy "
-            "containerized services on AWS and build full-stack applications "
-            "across data, model, API, and production layers.",
+            "Ship prediction algorithms, AI automation, and containerized AWS "
+            "services.",
         ],
         y,
         styles,
@@ -528,36 +592,23 @@ def _draw_main(
     )
     y = _draw_item(
         pdf,
-        "Teamspot - Regional Director / QA",
+        "BaanSoliciteren - Agentic Job Automation",
+        "2025 - 2026",
+        [
+            "Auditable pipeline for vacancy ingestion, fit scoring, and "
+            "application-state tracking. "
+            '<link href="https://github.com/Tomodovodoo/BaanSoliciteren" '
+            'color="#245BFF">GitHub</link>',
+        ],
+        y,
+        styles,
+        gap_after=2,
+    )
+    y = _draw_item(
+        pdf,
+        "Earlier: Teamspot (Regional Director / QA), Transcom, Chess.com",
         "2022 - 2024",
-        [
-            "Coordinated regional school projects, trained users, and "
-            "bug-tested web, app, API, and integration workflows in Jira.",
-        ],
-        y,
-        styles,
-        gap_after=2,
-    )
-    y = _draw_item(
-        pdf,
-        "Transcom (for Odido)",
-        "2024",
-        [
-            "Maintained consistently strong customer-satisfaction results and "
-            "learned to explain technical and operational issues clearly.",
-        ],
-        y,
-        styles,
-        gap_after=2,
-    )
-    y = _draw_item(
-        pdf,
-        "Chess.com",
-        "2022",
-        [
-            "Moderated and proctored international chess events; recognized as "
-            "Member of the Year 2021 for community ownership and coaching.",
-        ],
+        [],
         y,
         styles,
         gap_after=0,
@@ -568,9 +619,9 @@ def _draw_main(
 def build_pdf() -> None:
     styles = _styles()
     pdf = canvas.Canvas(str(PDF_PATH), pagesize=A4, pageCompression=1)
-    pdf.setTitle("Tom de Groot - Scientific AI, Evaluation and Data")
+    pdf.setTitle("Tom de Groot - Independent Researcher")
     pdf.setAuthor("Tom de Groot")
-    pdf.setSubject("CV tailored to scientific AI evaluation and data roles")
+    pdf.setSubject("Independent research in AI-assisted mathematics and science")
     _draw_sidebar(pdf, styles)
     main_bottom = _draw_main(pdf, styles)
     if main_bottom < 7 * mm:
@@ -600,6 +651,8 @@ def validate_outputs() -> None:
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     required_phrases = (
         "Tom de Groot",
+        "INDEPENDENT RESEARCHER",
+        "Raynaud bundles",
         "SoundImports",
         "49,248",
         "Graph Neural Networks",
